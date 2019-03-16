@@ -72,18 +72,29 @@ class Crawler:
             result1 = results[0].get_text().strip()
             result2 = results[-1].get_text().strip()
 
-            self.matchList.append(matchResult(id, player1, player2, result1, result2))
-            localMatchList.append(matchResult(id, player1, player2, result1, result2))
+            date = self.getDate(cell)
+
+            self.matchList.append(matchResult(date, id, player1, player2, result1, result2))
+            localMatchList.append(matchResult(date, id, player1, player2, result1, result2))
         print("matchlist length", len(self.matchList))
-        with codecs.open("../data/matchResults.csv", "a", "utf-8") as file:
+        with codecs.open("../data/matchResultsDates.csv", "a", "utf-8") as file:
             for result in localMatchList:
                 writeString = ",".join(result.getList()) + "\n"
                 file.write(writeString)
 
         # print(cellMatches)
 
+
+    def getDate(self, soup):
+        prev = soup.find_previous_sibling("div", class_="match-date")
+        if prev is None:
+            print("Could not find date")
+            return "NaN"
+        return prev.text.strip().replace(',', '')
+
 class matchResult:
-    def __init__(self, id, player1, player2, result1, result2):
+    def __init__(self, date, id, player1, player2, result1, result2):
+        self.date = date
         self.id = id
         self.player1 = player1
         self.player2 = player2
@@ -91,7 +102,7 @@ class matchResult:
         self.result2 = result2
 
     def getList(self):
-        return [self.id, self.player1, self.player2, self.result1, self.result2]
+        return [self.date, self.id, self.player1, self.player2, self.result1, self.result2]
 
 if __name__ == '__main__':
     url = "https://www.gosugamers.net/starcraft2/matches/results?maxResults=18"
