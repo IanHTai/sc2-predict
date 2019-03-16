@@ -16,6 +16,7 @@ class ModelRunner:
                 self.runGame(row)
 
     def runGame(self, game):
+        # TODO: Add race into profile dict as Stats_P or Maru_T
         # Output prediction and run one update of model
         # Game is a dict from a row, from csvreader
         if not game['Player1'] in self.profiles:

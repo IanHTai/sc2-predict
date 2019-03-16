@@ -38,6 +38,8 @@ class Crawler:
         print(page, "done")
 
     def getData(self, soup, numTries=0):
+        #TODO: Scrape race information too, includes having to soup href of each match
+
         cellMatches = soup.select("div.match.finished")
 
         localMatchList = []
