@@ -87,3 +87,16 @@ REGIONS = {
     'KR': KR,
 }
 
+REGION_DICT = {}
+
+def fillRegionDict():
+    for country in NA + SA:
+        REGION_DICT[country] = 'NA'
+    # for country in SA:
+    #     REGION_DICT[country] = 'SA'
+    for country in EUW:
+        REGION_DICT[country] = 'EUW'
+    # for country in KR:
+    #     REGION_DICT[country] = 'KR'
+    for country in ASIA + KR:
+        REGION_DICT[country] = 'ASIA'

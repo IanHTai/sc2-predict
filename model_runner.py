@@ -9,6 +9,9 @@ from models.logistic import Logistic
 from models.glicko import Glicko
 from models.elo import Elo
 from datetime import datetime
+import helper
+from sklearn.model_selection import train_test_split
+import matplotlib.pyplot as plt
 
 class ModelRunner:
     def __init__(self, model, fileName, trainRatio=0.8, testRatio=0.2):
@@ -18,40 +21,29 @@ class ModelRunner:
         self.inDict = {'profile1': [], 'profile2': [], 'matches': []}
         self.trainRatio = trainRatio
         self.testRatio = testRatio
-        self.testDict = {'profile1': [], 'profile2': [], 'matches': []}
-        self.validationDict = {'profile1': [], 'profile2': [], 'matches': []}
 
     def runFile(self, fileName=None, test=False, validation=False):
         if fileName is None:
             fileName = self.fileName
-        trainLines = -1
-        testLines = -1
+        # trainLines = -1
+        # testLines = -1
         if test:
             with codecs.open(fileName, "r", "utf-8") as file:
                 lines = sum(1 for line in file)
-            print(lines)
-            trainLines = int(lines * self.trainRatio)
-            testLines = int(lines * self.testRatio)
-            print(trainLines)
-            print(testLines)
+            # print(lines)
+            # trainLines = int(lines * self.trainRatio)
+            # testLines = int(lines * self.testRatio)
+            # print(trainLines)
+            # print(testLines)
         with codecs.open(fileName, "r", "utf-8") as file:
-            lineCount = 0
+
             reader = csv.DictReader(file)
             for row in reader:
                 matchesOut = self.runGame(row)
-                lineCount += 1
-                if lineCount < trainLines or trainLines < 0:
-                    self.inDict['profile1'] = self.inDict['profile1'] + matchesOut['profile1']
-                    self.inDict['profile2'] = self.inDict['profile2'] + matchesOut['profile2']
-                    self.inDict['matches'] = self.inDict['matches'] + matchesOut['matches']
-                elif lineCount < testLines + trainLines or testLines < 0:
-                    self.testDict['profile1'] = self.testDict['profile1'] + matchesOut['profile1']
-                    self.testDict['profile2'] = self.testDict['profile2'] + matchesOut['profile2']
-                    self.testDict['matches'] = self.testDict['matches'] + matchesOut['matches']
-                else:
-                    self.validationDict['profile1'] = self.validationDict['profile1'] + matchesOut['profile1']
-                    self.validationDict['profile2'] = self.validationDict['profile2'] + matchesOut['profile2']
-                    self.validationDict['matches'] = self.validationDict['matches'] + matchesOut['matches']
+                self.inDict['profile1'] = self.inDict['profile1'] + matchesOut['profile1']
+                self.inDict['profile2'] = self.inDict['profile2'] + matchesOut['profile2']
+                self.inDict['matches'] = self.inDict['matches'] + matchesOut['matches']
+
 
     def runGame(self, game):
         # TODO: Add race into profile dict as Stats_P or Maru_T
@@ -59,14 +51,14 @@ class ModelRunner:
         # Game is a dict from a row, from csvreader
         if not game['Player1'] in self.profiles:
             race1 = None
-            if 'Race1' in game.keys():
-                race1 = game['Race1']
-            self.profiles[game['Player1']] = PlayerProfile(game['Player1'], race1, game['Date'])
+            if 'Player1Race' in game.keys():
+                race1 = game['Player1Race']
+            self.profiles[game['Player1']] = PlayerProfile(game['Player1'], race1, game['Date'], game['Player1Region'])
         if not game['Player2'] in self.profiles:
             race2 = None
-            if 'Race2' in game.keys():
-                race2 = game['Race2']
-            self.profiles[game['Player2']] = PlayerProfile(game['Player2'], race2, game['Date'])
+            if 'Player2Race' in game.keys():
+                race2 = game['Player2Race']
+            self.profiles[game['Player2']] = PlayerProfile(game['Player2'], race2, game['Date'], game['Player2Region'])
 
         out = {'profile1': [], 'profile2': [], 'matches': []}
         shuffledMatches = self.shuffleGames(int(game['Score1']), int(game['Score2']))
@@ -87,17 +79,39 @@ class ModelRunner:
             out['matches'].append(match)
 
             self.profiles[game['Player1']].updateProfile(game['Date'], self.profiles[game['Player2']], match[0] == 1)
-            self.profiles[game['Player2']].updateProfile(game['Date'], self.profiles[game['Player1']], match[0] == 1)
+            self.profiles[game['Player2']].updateProfile(game['Date'], self.profiles[game['Player1']], match[1] == 1)
 
         return out
 
+    def createTTV(self, trainPercentage=0.7, testPercentage=0.15):
+        # Create train, test, and validate
+        inArr = []
+        matchArr = []
+        for (player1, player2, match) in zip(self.inDict['profile1'], self.inDict['profile2'], self.inDict['matches']):
+            inArr.append(np.array([player1, player2]))
+            matchArr.append(np.array(match))
+        inArr = np.array(inArr)
+        matchArr = np.array(matchArr)
+
+        print(inArr.shape)
+        print(matchArr.shape)
+
+        self.train_X, test_x, self.train_Y, test_y = train_test_split(inArr, matchArr, test_size=1 - trainPercentage)
+        print(self.train_X.shape, self.train_Y.shape, test_x.shape, test_y.shape)
+        assert(len(test_x) == len(test_y))
+
+        self.test_X, self.val_X, self.test_Y, self.val_Y = train_test_split(test_x, test_y, test_size=(1 - trainPercentage - testPercentage)/(1 - trainPercentage))
+        assert(len(self.test_X) == len(self.test_Y))
+
     def updateModel(self):
-        self.model.update(self.inDict['profile1'], self.inDict['profile2'], self.inDict['matches'])
+        # Must be called after createTTV
+        self.model.update(self.train_X, self.train_Y)
 
     def testModel(self):
-        predictions = self.model.predictBatch(self.testDict['profile1'], self.testDict['profile2'])
+        # Must be called after createTTV
+        predictions = self.model.predictBatch(self.test_X)
         print(predictions)
-        real = self.testDict['matches']
+        real = self.test_Y
         total = 0
 
         print(real)
@@ -106,8 +120,39 @@ class ModelRunner:
             total += abs(real[i] - predictions[i])
         print(total, len(real), total/len(real))
 
+        self.stats(predictions, real)
 
         return total/len(real)
+
+    def stats(self, preds, real):
+        linspace = np.linspace(0.5, 1.0, 25)
+        buckets = np.zeros((25,2))
+        # buckets from 50 to 100
+        real = np.array(real)
+        print("predshape", preds.shape, "realshape", real.shape)
+        assert(len(preds) == len(real))
+        for i in range(0, len(real)):
+            matchIndex = np.argmax(preds[i])
+            bucketIndex = int(max(preds[i][0], preds[i][1]) * 50) - 25
+            if bucketIndex == 20:
+                # If 100% prediction
+                bucketIndex = 19
+            buckets[bucketIndex][0] += real[i][matchIndex]
+            buckets[bucketIndex][1] += 1
+
+        bucketResults = np.divide(buckets[:,0], buckets[:,1])# buckets[:,0]/buckets[:,1]
+        plt.plot(linspace, linspace, 'r--', label='perfect predictions')
+        plt.plot(linspace, bucketResults, 'bo', label='actual predictions')
+        idx = np.isfinite(linspace) & np.isfinite(bucketResults)
+        plt.plot(linspace, np.poly1d(np.polyfit(linspace[idx], bucketResults[idx], 1))(linspace), 'b--', label='fitted to predictions')
+        #plt.plot(np.unique(linspace), np.poly1d(np.polyfit(linspace, bucketResults, 1))(np.unique(linspace)), )
+        #plt.plot(linspace, np.polynomial.polynomial.Polynomial.fit(linspace, bucketResults, 1), 'b--', label='fitted predictions')
+
+        plt.xlabel("Predicted winrate")
+        plt.ylabel("Actual winrate")
+        plt.title("Actual vs Predicted Winrate")
+        plt.legend()
+        plt.show()
 
     def shuffleGames(self, score1, score2):
         out = []
@@ -195,19 +240,25 @@ class PlayerNotFoundException(Exception):
 
 
 if __name__ == "__main__":
+    helper.fillRegionDict()
     #model = Linear()
-    model = Glicko()
+    #model = Glicko()
     #model = Elo()
+    model = Logistic()
     print('Model Created')
     runner = ModelRunner(model, "data/matchResults_regionsRaces.csv", trainRatio=0.8, testRatio=0.2)
     print('Model Runner Created')
     runner.runFile(test=True)
     print('File Run')
+    runner.createTTV(0.7, 0.2)
+    print('TTV Separated')
     runner.updateModel()
     print('Model Updated')
     runner.testModel()
 
-    print(runner.predict('Serral', 'MacSed'))
+    # for key in runner.profiles.keys():
+    #     runner.profiles[key].checkDecay(datetime.now().date())
+
     rank = 1
     for name in sorted(runner.profiles, key=lambda name: runner.profiles[name].elo, reverse=True):
         timeSinceFirst = (datetime.now().date() - runner.profiles[name].firstPlayedDate).days

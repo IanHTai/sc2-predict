@@ -1,9 +1,9 @@
 import math
 from datetime import datetime, timedelta
-
+import helper
 
 class PlayerProfile:
-    def __init__(self, name, race, firstDate):
+    def __init__(self, name, race, firstDate, region=None):
         self.name = name
         self.dateFormat = '%A %B %d %Y'
         self.lastPlayedDate = datetime.strptime(firstDate, self.dateFormat).date()
@@ -18,10 +18,16 @@ class PlayerProfile:
         self.glickoRating = 1500
         self.glickoRD = 350
         self.glickoVol = 0.06
-        self.glickoTau = 0.8
-        self.placementsLeft = 15
+        self.glickoTau = 0.3
+        self.placementsLeft = 20
         self.placementResults = []
         self.race = race
+        self.eloDecay = 0.05
+
+        if region in helper.REGION_DICT.keys():
+            self.region = helper.REGION_DICT[region]
+        else:
+            self.region = "OTHER"
 
         # For glicko2 rating periods
         self.firstPlayedDate = datetime.strptime(firstDate, self.dateFormat).date()
@@ -42,6 +48,8 @@ class PlayerProfile:
         self.eloK = 32
         self.peakElo = 1200
 
+    def updateRace(self, race):
+        self.race = race
 
     def updateProfile(self, date, opponentProfile, win):
         assert(type(win) == bool)
@@ -101,6 +109,8 @@ class PlayerProfile:
             self.eloK = 20
         else:
             self.eloK = 10
+        if not self.region == opponentProfile.region:
+            self.eloK *= 2
 
         Q_A = 10**(self.elo/400)
         Q_B = 10**(opponentProfile.elo/400)
@@ -113,16 +123,21 @@ class PlayerProfile:
         self.expAverageLastPlayed = self.expAlpha * playTimeGap + self.expAverageLastPlayed * (1 - self.expAlpha)
 
     def checkDecay(self, date):
+        # Decays both glicko and elo
         numPeriods = (date - (self.lastStartPeriod + timedelta(days=self.periodDays))).days // self.periodDays
         if numPeriods > 0:
             self.lastStartPeriod += timedelta(days=self.periodDays * numPeriods)
             self.decay(numPeriods)
+            self.decayElo(numPeriods)
 
     def decay(self, periods):
         for i in range(periods):
             phi = self.glickoRD / 173.7178
             newPhi= math.sqrt(phi**2 + self.glickoVol**2)
             self.glickoRD = newPhi * 173.7178
+
+    def decayElo(self, periods):
+        self.elo = (1-self.eloDecay)**periods * (self.elo - 1200) + 1200
 
     def updateGlicko(self, opponentRating, opponentRD, win):
         assert (type(win) == bool)
@@ -182,7 +197,7 @@ class PlayerProfile:
         self.glickoRating = rPrime
         self.glickoRD = RDPrime
 
-    def getFeatures(self, opponentRace):
+    def getFeatures(self, opponentProfile):
         mu = (self.glickoRating - 1500) / 173.7178
         phi = self.glickoRD / 173.7178
         if self.expAverageLastPlayed == 0:
@@ -190,15 +205,24 @@ class PlayerProfile:
         else:
             timeWeightedRating = self.glickoRating / self.expAverageLastPlayed
 
-        if opponentRace == 'Z':
+        if opponentProfile.race == 'Z':
             normRace = self.expZ - self.expOverall
-        elif opponentRace == 'T':
+        elif opponentProfile.race == 'T':
             normRace = self.expT - self.expOverall
-        elif opponentRace == 'P':
+        elif opponentProfile.race == 'P':
             normRace = self.expP - self.expOverall
         else:
-            normRace = 0
-        return [mu, phi, timeWeightedRating, normRace, self.glickoRating, self.elo]
+            normRace = 0.5
+
+        opponentMu = (opponentProfile.glickoRating - 1500) / 173.7178
+        opponentPhi = opponentProfile.glickoRD / 173.7178
+        glickoE = self.glickoExpected(mu, opponentMu, opponentPhi)
+
+        Q_A = 10 ** (self.elo / 400)
+        Q_B = 10 ** (opponentProfile.elo / 400)
+        E_A = Q_A / (Q_A + Q_B)
+
+        return [mu, phi, timeWeightedRating, normRace, glickoE, self.elo, E_A]
 
     """
     Helper functions for Glicko calculations
