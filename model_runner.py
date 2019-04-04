@@ -12,6 +12,7 @@ from datetime import datetime
 import helper
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
+import scipy.stats
 
 class ModelRunner:
     def __init__(self, model, fileName, trainRatio=0.8, testRatio=0.2):
@@ -59,6 +60,16 @@ class ModelRunner:
             if 'Player2Race' in game.keys():
                 race2 = game['Player2Race']
             self.profiles[game['Player2']] = PlayerProfile(game['Player2'], race2, game['Date'], game['Player2Region'])
+
+        if self.profiles[game['Player1']].race is None:
+            if 'Player1Race' in game.keys():
+                race1 = game['Player1Race']
+                self.profiles[game['Player1']].race = race1
+
+        if self.profiles[game['Player2']].race is None:
+            if 'Player2Race' in game.keys():
+                race2 = game['Player2Race']
+                self.profiles[game['Player2']].race = race2
 
         out = {'profile1': [], 'profile2': [], 'matches': []}
         shuffledMatches = self.shuffleGames(int(game['Score1']), int(game['Score2']))
@@ -127,6 +138,7 @@ class ModelRunner:
     def stats(self, preds, real):
         linspace = np.linspace(0.5, 1.0, 25)
         buckets = np.zeros((25,2))
+        bucketTotals = [[] for i in range(0,25)]
         # buckets from 50 to 100
         real = np.array(real)
         print("predshape", preds.shape, "realshape", real.shape)
@@ -139,10 +151,29 @@ class ModelRunner:
                 bucketIndex = 19
             buckets[bucketIndex][0] += real[i][matchIndex]
             buckets[bucketIndex][1] += 1
+            bucketTotals[bucketIndex].append(real[i][matchIndex])
 
-        bucketResults = np.divide(buckets[:,0], buckets[:,1])# buckets[:,0]/buckets[:,1]
+        bucketResults = np.divide(buckets[:, 0], buckets[:, 1])  # buckets[:,0]/buckets[:,1]
+
+        def confidenceIntervals(a, results, confidence=0.95):
+            outLow = []
+            outHigh = []
+            for i in range(len(a)):
+                data = a[i]
+                n = len(data)
+                m, se = np.mean(data), scipy.stats.sem(data)
+                h = se * scipy.stats.t.ppf((1 + confidence) / 2., n-1)
+                outLow.append(results[i]-h)
+                outHigh.append(results[i]+h)
+            return outLow, outHigh
+
+        confLow, confHigh = confidenceIntervals(bucketTotals, bucketResults)
+
+
         plt.plot(linspace, linspace, 'r--', label='perfect predictions')
-        plt.plot(linspace, bucketResults, 'bo', label='actual predictions')
+        plt.plot(linspace, bucketResults, 'k.', label='actual predictions')
+        plt.plot(linspace, bucketResults, 'k')
+        plt.fill_between(linspace, confLow, confHigh, color='#539caf', alpha=0.4, label='95% CI')
         idx = np.isfinite(linspace) & np.isfinite(bucketResults)
         plt.plot(linspace, np.poly1d(np.polyfit(linspace[idx], bucketResults[idx], 1))(linspace), 'b--', label='fitted to predictions')
         #plt.plot(np.unique(linspace), np.poly1d(np.polyfit(linspace, bucketResults, 1))(np.unique(linspace)), )
@@ -262,7 +293,8 @@ if __name__ == "__main__":
     rank = 1
     for name in sorted(runner.profiles, key=lambda name: runner.profiles[name].elo, reverse=True):
         timeSinceFirst = (datetime.now().date() - runner.profiles[name].firstPlayedDate).days
-        print(rank, runner.profiles[name].name, runner.profiles[name].total, runner.profiles[name].glickoRating, timeSinceFirst, runner.profiles[name].total / timeSinceFirst, runner.profiles[name].elo)
+        print(rank, runner.profiles[name].name, runner.profiles[name].total, runner.profiles[name].glickoRating, timeSinceFirst, runner.profiles[name].total / timeSinceFirst, runner.profiles[name].elo,
+              runner.profiles[name].eloZ, runner.profiles[name].eloT, runner.profiles[name].eloP, "PEAK ELO", runner.profiles[name].peakElo)
         rank += 1
 
     print("Serral's Match History", "EXPOVERALL:", runner.profiles['Serral'].expOverall, "WINPERCENTAGE:", runner.profiles['Serral'].wins / runner.profiles['Serral'].total)

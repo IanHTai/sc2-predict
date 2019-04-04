@@ -153,13 +153,13 @@ Wednesday May 29 2013,17139,Neeb,United States,Terran,puCK,United States,Protoss
 Wednesday May 29 2013,17135,State,United States,Protoss,theognis,United States,Terran,1,2
 Wednesday May 29 2013,17131,Ian,Taiwan,Zerg,SpeCial.Sc2,Mexico,Terran,0,2
 Wednesday May 29 2013,17143,XY - Stc2,China,Terran,DeMuslim,United Kingdom,Terran,1,2
-Wednesday May 29 2013,16733,Rogue,Korea Republic of,,Golden,Korea Republic of,Zerg,1,0
-Wednesday May 29 2013,16732,Rogue,Korea Republic of,,YoDaSC2,Korea Republic of,Terran,1,0
+Wednesday May 29 2013,16733,Rogue,Korea Republic of,Zerg,Golden,Korea Republic of,Zerg,1,0
+Wednesday May 29 2013,16732,Rogue,Korea Republic of,Zerg,YoDaSC2,Korea Republic of,Terran,1,0
 Wednesday May 29 2013,16731,FanTaSy,Korea Republic of,Terran,Trust,Korea Republic of,Protoss,1,0
 Wednesday May 29 2013,16725,YoDaSC2,Korea Republic of,Terran,FanTaSy,Korea Republic of,Terran,0,1
 Wednesday May 29 2013,16724,Golden,Korea Republic of,Zerg,Trust,Korea Republic of,Protoss,0,1
 Wednesday May 29 2013,16727,Golden,Korea Republic of,Zerg,FanTaSy,Korea Republic of,Terran,0,1
-Wednesday May 29 2013,16726,Rogue,Korea Republic of,,Trust,Korea Republic of,Protoss,1,0
+Wednesday May 29 2013,16726,Rogue,Korea Republic of,Zerg,Trust,Korea Republic of,Protoss,1,0
 Wednesday May 29 2013,16573,[Liquid],International,,[MVP],Korea Republic of,,1,5
 Wednesday May 29 2013,16861,Strelok,Ukraine,Terran,Jogginghose,Germany,Protoss,2,1
 Wednesday May 29 2013,16862,SortOf,Sweden,Zerg,Slivko,Russian Federation,Zerg,2,0
@@ -174,11 +174,11 @@ Thursday May 30 2013,17150,Polt,Korea Republic of,Terran,Taeja,Korea Republic of
 Thursday May 30 2013,17047,[KHAN],Korea Republic of,,[Woongjin],International,,3,4
 Thursday May 30 2013,16740,Hurricane,Korea Republic of,Protoss,MarineKing,Korea Republic of,Terran,1,0
 Thursday May 30 2013,16741,First,Korea Republic of,Protoss,True.,Korea Republic of,Zerg,1,0
-Thursday May 30 2013,16743,Bang,Korea Republic of,,Hurricane,Korea Republic of,Protoss,0,1
+Thursday May 30 2013,16743,Bang,Korea Republic of,Terran,Hurricane,Korea Republic of,Protoss,0,1
 Thursday May 30 2013,16738,True.,Korea Republic of,Zerg,MarineKing,Korea Republic of,Terran,0,1
-Thursday May 30 2013,16739,Bang,Korea Republic of,,First,Korea Republic of,Protoss,0,1
+Thursday May 30 2013,16739,Bang,Korea Republic of,Terran,First,Korea Republic of,Protoss,0,1
 Thursday May 30 2013,16734,Hurricane,Korea Republic of,Protoss,True.,Korea Republic of,Zerg,1,0
-Thursday May 30 2013,16742,Bang,Korea Republic of,,MarineKing,Korea Republic of,Terran,0,1
+Thursday May 30 2013,16742,Bang,Korea Republic of,Terran,MarineKing,Korea Republic of,Terran,0,1
 Thursday May 30 2013,16737,Hurricane,Korea Republic of,Protoss,First,Korea Republic of,Protoss,0,1
 Thursday May 30 2013,16735,MarineKing,Korea Republic of,Terran,First,Korea Republic of,Protoss,1,0
 Thursday May 30 2013,16600,[K3],International,,[Liquid],International,,4,5
@@ -337,7 +337,7 @@ Sunday June 16 2013,18980,StarDust,Korea Republic of,Protoss,Zanster,Sweden,Zerg
 Sunday June 16 2013,18979,Bischu,Sweden,Protoss,RunA,Sweden,Protoss,2,0
 Sunday June 16 2013,18965,DeViL,Czech Republic,Zerg,SortOf,Sweden,Zerg,0,2
 Sunday June 16 2013,18964,Daisy,Korea Republic of,Protoss,StarNaN,Sweden,Protoss,1,2
-Sunday June 16 2013,18963,uThermal,Netherlands,,HyuN,Korea Republic of,Zerg,0,2
+Sunday June 16 2013,18963,uThermal,Netherlands,Terran,HyuN,Korea Republic of,Zerg,0,2
 Sunday June 16 2013,18950,Naniwa,Sweden,Protoss,Suppy,United States,Zerg,1,2
 Sunday June 16 2013,18949,Squirtle,Korea Republic of,Protoss,NightenD,Romania,Protoss,1,2
 Sunday June 16 2013,18981,Bischu,Sweden,Protoss,Zanster,Sweden,Zerg,1,2
@@ -348,9 +348,9 @@ Sunday June 16 2013,18975,Miniraser,Sweden,Zerg,TheSTC,Korea Republic of,Terran,
 Sunday June 16 2013,18974,MorroW,Sweden,Terran,TheSTC,Korea Republic of,Terran,0,2
 Sunday June 16 2013,18973,Miniraser,Sweden,Zerg,Life,Korea Republic of,Zerg,1,2
 Sunday June 16 2013,18962,StarNaN,Sweden,Protoss,HyuN,Korea Republic of,Zerg,0,2
-Sunday June 16 2013,18961,uThermal,Netherlands,,Daisy,Korea Republic of,Protoss,0,2
+Sunday June 16 2013,18961,uThermal,Netherlands,Terran,Daisy,Korea Republic of,Protoss,0,2
 Sunday June 16 2013,18960,HyuN,Korea Republic of,Zerg,Daisy,Korea Republic of,Protoss,2,0
-Sunday June 16 2013,18959,uThermal,Netherlands,,StarNaN,Sweden,Protoss,0,2
+Sunday June 16 2013,18959,uThermal,Netherlands,Terran,StarNaN,Sweden,Protoss,0,2
 Sunday June 16 2013,18958,HuK,Canada,Protoss,viPro,Sweden,Protoss,1,2
 Sunday June 16 2013,18957,Darkomicron,Netherlands,Protoss,viOLet,Korea Republic of,Zerg,0,2
 Sunday June 16 2013,18946,ThorZaiN,Sweden,Terran,Lucky.,Korea Republic of,Zerg,2,0
@@ -366,9 +366,9 @@ Sunday June 16 2013,18975,Miniraser,Sweden,Zerg,TheSTC,Korea Republic of,Terran,
 Sunday June 16 2013,18974,MorroW,Sweden,Terran,TheSTC,Korea Republic of,Terran,0,2
 Sunday June 16 2013,18973,Miniraser,Sweden,Zerg,Life,Korea Republic of,Zerg,1,2
 Sunday June 16 2013,18972,TheSTC,Korea Republic of,Terran,Life,Korea Republic of,Zerg,0,2
-Sunday June 16 2013,18961,uThermal,Netherlands,,Daisy,Korea Republic of,Protoss,0,2
+Sunday June 16 2013,18961,uThermal,Netherlands,Terran,Daisy,Korea Republic of,Protoss,0,2
 Sunday June 16 2013,18960,HyuN,Korea Republic of,Zerg,Daisy,Korea Republic of,Protoss,2,0
-Sunday June 16 2013,18959,uThermal,Netherlands,,StarNaN,Sweden,Protoss,0,2
+Sunday June 16 2013,18959,uThermal,Netherlands,Terran,StarNaN,Sweden,Protoss,0,2
 Sunday June 16 2013,18958,HuK,Canada,Protoss,viPro,Sweden,Protoss,1,2
 Sunday June 16 2013,18957,Darkomicron,Netherlands,Protoss,viOLet,Korea Republic of,Zerg,0,2
 Sunday June 16 2013,18946,ThorZaiN,Sweden,Terran,Lucky.,Korea Republic of,Zerg,2,0
@@ -512,9 +512,9 @@ Thursday June 20 2013,18869,EffOrt,Korea Republic of,Zerg,Maru,Korea Republic of
 Thursday June 20 2013,18870,Maru,Korea Republic of,Terran,sOs.sc2,Korea Republic of,Protoss,1,0
 Thursday June 20 2013,18875,Curious,Korea Republic of,Zerg,Symbol,Korea Republic of,Zerg,0,1
 Thursday June 20 2013,18874,Symbol,Korea Republic of,Zerg,Shine,Korea Republic of,Zerg,1,0
-Thursday June 20 2013,18873,Trap,Korea Republic of,,Curious,Korea Republic of,Zerg,1,0
+Thursday June 20 2013,18873,Trap,Korea Republic of,Protoss,Curious,Korea Republic of,Zerg,1,0
 Thursday June 20 2013,18872,Shine,Korea Republic of,Zerg,Curious,Korea Republic of,Zerg,0,1
-Thursday June 20 2013,18871,Symbol,Korea Republic of,Zerg,Trap,Korea Republic of,,0,1
+Thursday June 20 2013,18871,Symbol,Korea Republic of,Zerg,Trap,Korea Republic of,Protoss,0,1
 Thursday June 20 2013,19169,MC,Korea Republic of,Protoss,Fuzer,Finland,Terran,2,0
 Thursday June 20 2013,19170,Goswser,United States,Zerg,Socke,Germany,Protoss,1,2
 Thursday June 20 2013,19171,MC,Korea Republic of,Protoss,Socke,Germany,Protoss,2,0
@@ -655,7 +655,7 @@ Saturday June 29 2013,20563,ShoWTimE.,Germany,Protoss,San111,Korea Republic of,P
 Saturday June 29 2013,21183,Suppy,United States,Zerg,DeMuslim,United Kingdom,Terran,2,0
 Saturday June 29 2013,21184,Xenocider,United States,Terran,Polt,Korea Republic of,Terran,0,2
 Saturday June 29 2013,21213,qxc,United States,Terran,Tilea,Australia,Terran,2,0
-Saturday June 29 2013,21214,Stats,Korea Republic of,,Dear,Korea Republic of,,0,2
+Saturday June 29 2013,21214,Stats,Korea Republic of,Protoss,Dear,Korea Republic of,Protoss,0,2
 Saturday June 29 2013,21243,Phog,United States,Zerg,Spanishiwa,United States,Zerg,2,0
 Saturday June 29 2013,21123,soO,Korea Republic of,Zerg,Illusion,United States,Terran,2,0
 Saturday June 29 2013,21094,Heart,Korea Republic of,Terran,Apocalypse,Korea Republic of,Terran,2,0
@@ -669,7 +669,7 @@ Saturday June 29 2013,21033,HerO,Korea Republic of,Protoss,Select,Korea Republic
 Saturday June 29 2013,21034,Minigun,United States,Protoss,Kane,Canada,Zerg,2,0
 Saturday June 29 2013,21184,Xenocider,United States,Terran,Polt,Korea Republic of,Terran,0,2
 Saturday June 29 2013,21245,Phog,United States,Zerg,Jaedong,Korea Republic of,Zerg,0,2
-Saturday June 29 2013,21215,qxc,United States,Terran,Dear,Korea Republic of,,1,2
+Saturday June 29 2013,21215,qxc,United States,Terran,Dear,Korea Republic of,Protoss,1,2
 Saturday June 29 2013,21185,Suppy,United States,Zerg,Polt,Korea Republic of,Terran,1,2
 Saturday June 29 2013,21155,Naniwa,Sweden,Protoss,HuK,Canada,Protoss,2,0
 Saturday June 29 2013,21125,soO,Korea Republic of,Zerg,HyuN,Korea Republic of,Zerg,1,2
@@ -1131,7 +1131,7 @@ Saturday August 17 2013,25461,TLO,Germany,Zerg,Uzer,Poland,Zerg,2,0
 Saturday August 17 2013,25431,[Acer],International,,[Liquid],International,,5,1
 Saturday August 17 2013,25462,ret,Netherlands,Zerg,ThorZaiN,Sweden,Terran,1,2
 Saturday August 17 2013,25498,StarDust,Korea Republic of,Protoss,TOP*,Korea Republic of,Terran,1,2
-Saturday August 17 2013,25499,uThermal,Netherlands,,San111,Korea Republic of,Protoss,1,2
+Saturday August 17 2013,25499,uThermal,Netherlands,Terran,San111,Korea Republic of,Protoss,1,2
 Saturday August 17 2013,25500,HuK,Canada,Protoss,Lucky.,Korea Republic of,Zerg,1,2
 Saturday August 17 2013,25507,Sage,Korea Republic of,Protoss,San111,Korea Republic of,Protoss,0,2
 Saturday August 17 2013,25506,Lucky.,Korea Republic of,Zerg,Venus,Korea Republic of,Protoss,4,2
@@ -1141,7 +1141,7 @@ Saturday August 17 2013,25503,TOP*,Korea Republic of,Terran,San111,Korea Republi
 Saturday August 17 2013,25502,Sonic,United States,Terran,Venus,Korea Republic of,Protoss,0,2
 Saturday August 17 2013,25501,Sage,Korea Republic of,Protoss,Sen,Taiwan,Zerg,2,0
 Saturday August 17 2013,25500,HuK,Canada,Protoss,Lucky.,Korea Republic of,Zerg,1,2
-Saturday August 17 2013,25499,uThermal,Netherlands,,San111,Korea Republic of,Protoss,1,2
+Saturday August 17 2013,25499,uThermal,Netherlands,Terran,San111,Korea Republic of,Protoss,1,2
 Saturday August 17 2013,25498,StarDust,Korea Republic of,Protoss,TOP*,Korea Republic of,Terran,1,2
 Saturday August 17 2013,25493,Lucky.,Korea Republic of,Zerg,Apocalypse,Korea Republic of,Terran,2,1
 Saturday August 17 2013,25492,HuK,Canada,Protoss,JonnyREcco,United Kingdom,Zerg,2,1
@@ -1790,7 +1790,7 @@ Thursday November 28 2013,31026,Avenge,Korea Republic of,Protoss,San111,Korea Re
 Thursday November 28 2013,31025,San111,Korea Republic of,Protoss,Targa,Norway,Zerg,2,0
 Thursday November 28 2013,31024,NesTea,Korea Republic of,Zerg,Targa,Norway,Zerg,1,2
 Thursday November 28 2013,31188,PartinG,Korea Republic of,Protoss,Sen,Taiwan,Zerg,2,0
-Thursday November 28 2013,31187,Zerth,Jordan,,Nicholas,Hong Kong,Terran,0,2
+Thursday November 28 2013,31187,Zerth,Jordan,Zerg,Nicholas,Hong Kong,Terran,0,2
 Thursday November 28 2013,31173,HasuObs,Germany,Protoss,Ian,Taiwan,Zerg,2,0
 Thursday November 28 2013,31172,Soulkey,Korea Republic of,Zerg,Socke.sc2,Germany,Terran,2,0
 Thursday November 28 2013,31171,Timber,Malaysia,Terran,Capoch,Argentina,Protoss,0,2
@@ -1801,7 +1801,7 @@ Thursday November 28 2013,31155,HasuObs,Germany,Protoss,Clannad,China,Zerg,0,2
 Thursday November 28 2013,31189,Nicholas,Hong Kong,Terran,Babysky,Ecuador,Terran,0,2
 Thursday November 28 2013,31157,Capoch,Argentina,Protoss,BlinG,United Kingdom,Protoss,0,2
 Thursday November 28 2013,31192,PartinG,Korea Republic of,Protoss,Babysky,Ecuador,Terran,2,0
-Thursday November 28 2013,31191,Zerth,Jordan,,Sen,Taiwan,Zerg,0,2
+Thursday November 28 2013,31191,Zerth,Jordan,Zerg,Sen,Taiwan,Zerg,0,2
 Thursday November 28 2013,31190,LiveZerg,Russian Federation,Zerg,Albion,Japan,Protoss,2,0
 Thursday November 28 2013,31189,Nicholas,Hong Kong,Terran,Babysky,Ecuador,Terran,0,2
 Thursday November 28 2013,31188,PartinG,Korea Republic of,Protoss,Sen,Taiwan,Zerg,2,0
@@ -1818,13 +1818,13 @@ Thursday November 28 2013,31159,Socke.sc2,Germany,Terran,HasuObs,Germany,Protoss
 Thursday November 28 2013,31158,Ian,Taiwan,Zerg,Clannad,China,Zerg,2,0
 Thursday November 28 2013,31193,Sen,Taiwan,Zerg,Albion,Japan,Protoss,2,0
 Thursday November 28 2013,31148,Soulkey,Korea Republic of,Zerg,Ian,Taiwan,Zerg,2,1
-Thursday November 28 2013,31195,Zerth,Jordan,,Babysky,Ecuador,Terran,0,2
+Thursday November 28 2013,31195,Zerth,Jordan,Zerg,Babysky,Ecuador,Terran,0,2
 Thursday November 28 2013,31194,Nicholas,Hong Kong,Terran,LiveZerg,Russian Federation,Zerg,0,2
 Thursday November 28 2013,31193,Sen,Taiwan,Zerg,Albion,Japan,Protoss,2,0
 Thursday November 28 2013,31192,PartinG,Korea Republic of,Protoss,Babysky,Ecuador,Terran,2,0
 Thursday November 28 2013,31181,Albion,Japan,Protoss,Nicholas,Hong Kong,Terran,0,2
 Thursday November 28 2013,31180,PartinG,Korea Republic of,Protoss,LiveZerg,Russian Federation,Zerg,2,0
-Thursday November 28 2013,31179,Zerth,Jordan,,Albion,Japan,Protoss,0,2
+Thursday November 28 2013,31179,Zerth,Jordan,Zerg,Albion,Japan,Protoss,0,2
 Thursday November 28 2013,31178,Sen,Taiwan,Zerg,Nicholas,Hong Kong,Terran,2,0
 Thursday November 28 2013,31177,Babysky,Ecuador,Terran,LiveZerg,Russian Federation,Zerg,0,2
 Thursday November 28 2013,31176,PartinG,Korea Republic of,Protoss,Albion,Japan,Protoss,2,0
@@ -1834,7 +1834,7 @@ Thursday November 28 2013,31163,Ian,Taiwan,Zerg,Socke.sc2,Germany,Terran,2,0
 Thursday November 28 2013,31162,Capoch,Argentina,Protoss,HasuObs,Germany,Protoss,0,2
 Thursday November 28 2013,31161,Timber,Malaysia,Terran,Clannad,China,Zerg,0,2
 Thursday November 28 2013,31149,Socke.sc2,Germany,Terran,Capoch,Argentina,Protoss,0,2
-Thursday November 28 2013,31196,Zerth,Jordan,,PartinG,Korea Republic of,Protoss,0,2
+Thursday November 28 2013,31196,Zerth,Jordan,Zerg,PartinG,Korea Republic of,Protoss,0,2
 Thursday November 28 2013,31181,Albion,Japan,Protoss,Nicholas,Hong Kong,Terran,0,2
 Thursday November 28 2013,31165,BlinG,United Kingdom,Protoss,HasuObs,Germany,Protoss,2,0
 Thursday November 28 2013,31149,Socke.sc2,Germany,Terran,Capoch,Argentina,Protoss,0,2
@@ -2109,9 +2109,9 @@ Wednesday January 22 2014,33055,Zest,Korea Republic of,Protoss,Stork,Korea Repub
 Wednesday January 22 2014,33056,INnoVation,Korea Republic of,Terran,herO.kr,Korea Republic of,Protoss,1,2
 Wednesday January 22 2014,33057,Stork,Korea Republic of,Protoss,herO.kr,Korea Republic of,Protoss,1,2
 Wednesday January 22 2014,33058,Life,Korea Republic of,Zerg,ParalyzE,Korea Republic of,Protoss,2,1
-Wednesday January 22 2014,33059,SkyHigh,Korea Republic of,,Squirtle,Korea Republic of,Protoss,1,2
+Wednesday January 22 2014,33059,SkyHigh,Korea Republic of,Terran,Squirtle,Korea Republic of,Protoss,1,2
 Wednesday January 22 2014,33060,Life,Korea Republic of,Zerg,Squirtle,Korea Republic of,Protoss,0,2
-Wednesday January 22 2014,33061,ParalyzE,Korea Republic of,Protoss,SkyHigh,Korea Republic of,,2,0
+Wednesday January 22 2014,33061,ParalyzE,Korea Republic of,Protoss,SkyHigh,Korea Republic of,Terran,2,0
 Wednesday January 22 2014,33062,Life,Korea Republic of,Zerg,ParalyzE,Korea Republic of,Protoss,2,0
 Wednesday January 22 2014,33201,Tefel,Poland,Zerg,Lilbow-,France,Protoss,2,3
 Wednesday January 22 2014,33202,Slivko,Russian Federation,Zerg,DieStar,Poland,Terran,3,1
@@ -2693,7 +2693,7 @@ Thursday April 17 2014,39401,Stork,Korea Republic of,Protoss,Squirtle,Korea Repu
 Thursday April 17 2014,39400,Squirtle,Korea Republic of,Protoss,Action,Korea Republic of,Zerg,2,1
 Thursday April 17 2014,39399,Pet,Korea Republic of,Zerg,Stork,Korea Republic of,Protoss,1,2
 Friday April 18 2014,39404,Symbol,Korea Republic of,Zerg,Billowy,Korea Republic of,Protoss,1,2
-Friday April 18 2014,39405,Trap,Korea Republic of,Protoss,hitmaN,Korea Republic of,,2,1
+Friday April 18 2014,39405,Trap,Korea Republic of,Protoss,hitmaN,Korea Republic of,Zerg,2,1
 Friday April 18 2014,39409,MyuNgSiK,Korea Republic of,Protoss,FanTaSy,Korea Republic of,Terran,2,1
 Friday April 18 2014,39410,Leenock,Korea Republic of,Zerg,eMotion.,Korea Republic of,Protoss,2,0
 Saturday April 19 2014,40405,Hack,Korea Republic of,Terran,Squirtle,Korea Republic of,Protoss,2,1
@@ -3274,16 +3274,16 @@ Friday August 19 2016,137360,Rogue,Korea Republic of,Zerg,Classic,Korea Republic
 Friday August 19 2016,137361,GuMiho,Korea Republic of,Terran,Classic,Korea Republic of,Protoss,2,1
 Wednesday August 24 2016,138137,herO.kr,Korea Republic of,Protoss,sOs.sc2,Korea Republic of,Protoss,0,3
 Wednesday August 24 2016,138138,MyuNgSiK,Korea Republic of,Protoss,GuMiho,Korea Republic of,Terran,3,2
-Friday August 26 2016,142104,STEPHANO.sc2,Tunisia,,STATIC.sc2,South Africa,,2,0
-Friday August 26 2016,142104,STEPHANO.sc2,Tunisia,,STATIC.sc2,South Africa,,2,0
-Friday August 26 2016,142107,STATIC.sc2,South Africa,,ELGOLDEN,Syrian Arab Republic,,2,0
-Friday August 26 2016,142106,STEPHANO.sc2,Tunisia,,AEGYWYNN,Turkey,,2,0
-Friday August 26 2016,142105,ELGOLDEN,Syrian Arab Republic,,AEGYWYNN,Turkey,,0,2
-Friday August 26 2016,142103,AEGYWYNN,Turkey,,STATIC.sc2,South Africa,,2,0
+Friday August 26 2016,142104,STEPHANO.sc2,Tunisia,Zerg,STATIC.sc2,South Africa,Protoss,2,0
+Friday August 26 2016,142104,STEPHANO.sc2,Tunisia,Zerg,STATIC.sc2,South Africa,Protoss,2,0
+Friday August 26 2016,142107,STATIC.sc2,South Africa,Protoss,ELGOLDEN,Syrian Arab Republic,Protoss,2,0
+Friday August 26 2016,142106,STEPHANO.sc2,Tunisia,Zerg,AEGYWYNN,Turkey,Zerg,2,0
+Friday August 26 2016,142105,ELGOLDEN,Syrian Arab Republic,Protoss,AEGYWYNN,Turkey,Zerg,0,2
+Friday August 26 2016,142103,AEGYWYNN,Turkey,Zerg,STATIC.sc2,South Africa,Protoss,2,0
 Friday August 26 2016,138139,Ryung,Korea Republic of,Terran,ByuN,Korea Republic of,Terran,2,3
 Friday August 26 2016,138140,Dear,Korea Republic of,Protoss,TY,Korea Republic of,Terran,3,2
-Saturday August 27 2016,142123,DRAGER,South Africa,,AEGYWYNN,Turkey,,3,1
-Saturday August 27 2016,142125,AEGYWYNN,Turkey,,Zerghamdi,Turkey,Zerg,1,3
+Saturday August 27 2016,142123,DRAGER,South Africa,Protoss,AEGYWYNN,Turkey,Zerg,3,1
+Saturday August 27 2016,142125,AEGYWYNN,Turkey,Zerg,Zerghamdi,Turkey,Zerg,1,3
 Wednesday August 31 2016,138141,sOs.sc2,Korea Republic of,Protoss,MyuNgSiK,Korea Republic of,Protoss,4,1
 Saturday September 10 2016,138143,sOs.sc2,Korea Republic of,Protoss,ByuN,Korea Republic of,Terran,1,4
 Sunday September 11 2016,139323,Dark.Sc2,Korea Republic of,Zerg,Solar,Korea Republic of,Zerg,3,4
@@ -3310,16 +3310,16 @@ Friday September 30 2016,142828,Nerchio,Poland,Zerg,Classic,Korea Republic of,Pr
 Friday September 30 2016,142829,Patience,Korea Republic of,Protoss,Nerchio,Poland,Zerg,2,0
 Friday September 30 2016,142830,Maru,Korea Republic of,Terran,Classic,Korea Republic of,Protoss,2,1
 Friday September 30 2016,142831,Nerchio,Poland,Zerg,Maru,Korea Republic of,Terran,1,2
-Thursday October 6 2016,143590,IBIMarine,Spain,,ShoWTimE.,Germany,Protoss,0,2
-Thursday October 6 2016,143590,IBIMarine,Spain,,ShoWTimE.,Germany,Protoss,0,2
+Thursday October 6 2016,143590,IBIMarine,Spain,Terran,ShoWTimE.,Germany,Protoss,0,2
+Thursday October 6 2016,143590,IBIMarine,Spain,Terran,ShoWTimE.,Germany,Protoss,0,2
 Thursday October 6 2016,143588,Harstem,Netherlands,Protoss,Beastyqt,Serbia,Terran,1,2
-Thursday October 6 2016,143583,IBIMarine,Spain,,Beastyqt,Serbia,Terran,0,2
+Thursday October 6 2016,143583,IBIMarine,Spain,Terran,Beastyqt,Serbia,Terran,0,2
 Thursday October 6 2016,143587,ShoWTimE.,Germany,Protoss,Dayshi.sc2,France,Terran,1,2
-Thursday October 6 2016,143589,IBIMarine,Spain,,Dayshi.sc2,France,Terran,0,2
+Thursday October 6 2016,143589,IBIMarine,Spain,Terran,Dayshi.sc2,France,Terran,0,2
 Thursday October 6 2016,143584,ShoWTimE.,Germany,Protoss,Harstem,Netherlands,Protoss,2,1
 Thursday October 6 2016,143585,Beastyqt,Serbia,Terran,Dayshi.sc2,France,Terran,2,0
 Thursday October 6 2016,143581,ShoWTimE.,Germany,Protoss,Beastyqt,Serbia,Terran,1,2
-Thursday October 6 2016,143586,IBIMarine,Spain,,Harstem,Netherlands,Protoss,0,2
+Thursday October 6 2016,143586,IBIMarine,Spain,Terran,Harstem,Netherlands,Protoss,0,2
 Thursday October 6 2016,143596,Serral,Finland,Zerg,Bly,Ukraine,Zerg,2,1
 Thursday October 6 2016,143595,Namshar,Sweden,Zerg,GungFuBanda,Germany,Protoss,2,1
 Thursday October 6 2016,143597,Revolver,Russian Federation,Zerg,GungFuBanda,Germany,Protoss,0,2
@@ -3397,10 +3397,10 @@ Friday October 21 2016,146048,Neeb,United States,Terran,Cham,Mexico,Zerg,2,1
 Friday October 21 2016,146049,DominiC,Uruguay,Protoss,Kelazhur,Brazil,Terran,0,2
 Friday October 21 2016,146047,eGGz,Colombia,Zerg,NoRegreT,Canada,Zerg,1,2
 Friday October 21 2016,146086,Ryu.sc2,Peru,Zerg,SpeCial.Sc2,Mexico,Terran,0,2
-Friday October 21 2016,146087,EGG.,Argentina,,Erik,Brazil,Zerg,0,2
+Friday October 21 2016,146087,EGG.,Argentina,Zerg,Erik,Brazil,Zerg,0,2
 Friday October 21 2016,146091,Scarlett,Canada,Zerg,Erik,Brazil,Zerg,2,0
-Friday October 21 2016,146092,Ryu.sc2,Peru,Zerg,EGG.,Argentina,,2,1
-Saturday October 22 2016,146094,Scarlett,Canada,Zerg,EGG.,Argentina,,2,0
+Friday October 21 2016,146092,Ryu.sc2,Peru,Zerg,EGG.,Argentina,Zerg,2,1
+Saturday October 22 2016,146094,Scarlett,Canada,Zerg,EGG.,Argentina,Zerg,2,0
 Saturday October 22 2016,146093,Erik,Brazil,Zerg,SpeCial.Sc2,Mexico,Terran,0,2
 Saturday October 22 2016,145440,TRUE,Korea Republic of,Zerg,TooDming,China,Zerg,2,3
 Saturday October 22 2016,145445,Punk,China,Zerg,Stork,Korea Republic of,Protoss,3,2
@@ -3415,7 +3415,7 @@ Saturday October 22 2016,146050,eGGz,Colombia,Zerg,Cham,Mexico,Zerg,0,2
 Saturday October 22 2016,146046,Kelazhur,Brazil,Terran,Cham,Mexico,Zerg,2,1
 Saturday October 22 2016,146095,Scarlett,Canada,Zerg,Ryu.sc2,Peru,Zerg,2,0
 Saturday October 22 2016,146088,Scarlett,Canada,Zerg,SpeCial.Sc2,Mexico,Terran,0,2
-Saturday October 22 2016,146090,SpeCial.Sc2,Mexico,Terran,EGG.,Argentina,,2,0
+Saturday October 22 2016,146090,SpeCial.Sc2,Mexico,Terran,EGG.,Argentina,Zerg,2,0
 Saturday October 22 2016,146089,Ryu.sc2,Peru,Zerg,Erik,Brazil,Zerg,1,2
 Sunday October 23 2016,145446,TRUE,Korea Republic of,Zerg,Punk,China,Zerg,3,0
 Sunday October 23 2016,145447,TooDming,China,Zerg,TRUE,Korea Republic of,Zerg,0,4
@@ -3576,21 +3576,21 @@ Thursday January 12 2017,153645,Namshar,Sweden,Zerg,DeMuslim,United Kingdom,Terr
 Thursday January 12 2017,153666,MarineLorD,France,Terran,Rex,Taiwan,Zerg,2,0
 Thursday January 12 2017,153661,Nerchio,Poland,Zerg,Maru,Korea Republic of,Terran,0,2
 Thursday January 12 2017,153665,Maru,Korea Republic of,Terran,Beastyqt,Serbia,Terran,2,0
-Thursday January 12 2017,153644,DRAGER,South Africa,,XY - Stc2,China,Terran,0,2
+Thursday January 12 2017,153644,DRAGER,South Africa,Protoss,XY - Stc2,China,Terran,0,2
 Thursday January 12 2017,153649,Stephano,France,Zerg,DeMuslim,United Kingdom,Terran,2,1
 Thursday January 12 2017,153663,Rex,Taiwan,Zerg,Beastyqt,Serbia,Terran,1,2
-Thursday January 12 2017,153655,Stephano,France,Zerg,DRAGER,South Africa,,1,2
+Thursday January 12 2017,153655,Stephano,France,Zerg,DRAGER,South Africa,Protoss,1,2
 Thursday January 12 2017,153658,Nerchio,Poland,Zerg,MarineLorD,France,Terran,2,1
-Friday January 13 2017,153651,Erik,Brazil,Zerg,DRAGER,South Africa,,2,1
+Friday January 13 2017,153651,Erik,Brazil,Zerg,DRAGER,South Africa,Protoss,2,1
 Friday January 13 2017,153667,Nerchio,Poland,Zerg,Beastyqt,Serbia,Terran,2,0
 Friday January 13 2017,153659,Rex,Taiwan,Zerg,Maru,Korea Republic of,Terran,0,2
 Friday January 13 2017,153643,Stephano,France,Zerg,Erik,Brazil,Zerg,2,0
 Friday January 13 2017,153672,Harstem,Netherlands,Protoss,Maru,Korea Republic of,Terran,0,2
 Friday January 13 2017,153668,Harstem,Netherlands,Protoss,Rex,Taiwan,Zerg,2,0
-Friday January 13 2017,153653,DeMuslim,United Kingdom,Terran,DRAGER,South Africa,,2,0
+Friday January 13 2017,153653,DeMuslim,United Kingdom,Terran,DRAGER,South Africa,Protoss,2,0
 Friday January 13 2017,153650,XY - Stc2,China,Terran,Namshar,Sweden,Zerg,2,1
 Friday January 13 2017,153670,Nerchio,Poland,Zerg,Rex,Taiwan,Zerg,2,0
-Friday January 13 2017,153648,DRAGER,South Africa,,Namshar,Sweden,Zerg,0,2
+Friday January 13 2017,153648,DRAGER,South Africa,Protoss,Namshar,Sweden,Zerg,0,2
 Friday January 13 2017,153657,DeMuslim,United Kingdom,Terran,XY - Stc2,China,Terran,0,2
 Friday January 13 2017,153662,MarineLorD,France,Terran,Harstem,Netherlands,Protoss,2,0
 Friday January 13 2017,153683,SpeCial.Sc2,Mexico,Terran,Zerghamdi,Turkey,Zerg,2,0
@@ -3741,7 +3741,7 @@ Tuesday February 28 2017,160016,Impact,Korea Republic of,Zerg,Losira,Korea Repub
 Tuesday February 28 2017,160017,Jjakji,Korea Republic of,Terran,Impact,Korea Republic of,Zerg,2,1
 Tuesday February 28 2017,160021,MiNiMaTh,France,Zerg,Thalandros,Netherlands,Zerg,2,0
 Tuesday February 28 2017,160022,Guru,Poland,Zerg,Rodzyn,Poland,Protoss,2,0
-Tuesday February 28 2017,160023,Indy,Poland,,MaNa,Poland,Protoss,0,2
+Tuesday February 28 2017,160023,Indy,Poland,Protoss,MaNa,Poland,Protoss,0,2
 Tuesday February 28 2017,160024,Ryung,Korea Republic of,Terran,ReiGN.Sc2,Germany,Protoss,2,0
 Tuesday February 28 2017,160024,Ryung,Korea Republic of,Terran,ReiGN.Sc2,Germany,Protoss,2,0
 Tuesday February 28 2017,160025,aLo.Sc2,Poland,Zerg,Namshar,Sweden,Zerg,0,2
@@ -3754,13 +3754,13 @@ Tuesday February 28 2017,160031,HaPe,Poland,Protoss,PtitDrogo,France,Protoss,0,2
 Tuesday February 28 2017,160030,Ryung,Korea Republic of,Terran,Namshar,Sweden,Zerg,2,0
 Tuesday February 28 2017,160029,Guru,Poland,Zerg,MaNa,Poland,Protoss,2,0
 Tuesday February 28 2017,160028,Patience,Korea Republic of,Protoss,MiNiMaTh,France,Zerg,2,0
-Tuesday February 28 2017,160038,Indy,Poland,,Rodzyn,Poland,Protoss,2,0
+Tuesday February 28 2017,160038,Indy,Poland,Protoss,Rodzyn,Poland,Protoss,2,0
 Tuesday February 28 2017,160041,HaPe,Poland,Protoss,ArT.Sc2,Poland,Protoss,0,2
 Tuesday February 28 2017,160040,MiNiMaTh,France,Zerg,qbeN,Poland,Protoss,2,1
 Tuesday February 28 2017,160039,MaNa,Poland,Protoss,ReiGN.Sc2,Germany,Protoss,2,0
 Tuesday February 28 2017,160033,Ryung,Korea Republic of,Terran,PtitDrogo,France,Protoss,2,0
 Tuesday February 28 2017,160032,Patience,Korea Republic of,Protoss,Guru,Poland,Zerg,2,0
-Tuesday February 28 2017,160042,Namshar,Sweden,Zerg,Indy,Poland,,2,0
+Tuesday February 28 2017,160042,Namshar,Sweden,Zerg,Indy,Poland,Protoss,2,0
 Tuesday February 28 2017,160043,MaNa,Poland,Protoss,MiNiMaTh,France,Zerg,2,0
 Tuesday February 28 2017,160044,ArT.Sc2,Poland,Protoss,Namshar,Sweden,Zerg,0,2
 Tuesday February 28 2017,160045,PtitDrogo,France,Protoss,MaNa,Poland,Protoss,0,2
@@ -3889,7 +3889,7 @@ Thursday April 27 2017,169450,Optimus.NED,Netherlands,Terran,Oobios,United State
 Thursday April 27 2017,169500,FeaR.SC2,Germany,Protoss,WarreN,United States,Zerg,2,0
 Thursday April 27 2017,169450,Optimus.NED,Netherlands,Terran,Oobios,United States,Zerg,2,0
 Thursday April 27 2017,169500,FeaR.SC2,Germany,Protoss,WarreN,United States,Zerg,2,0
-Thursday April 27 2017,169485,SirRobin,United States,,Words,United States,Terran,2,0
+Thursday April 27 2017,169485,SirRobin,United States,Zerg,Words,United States,Terran,2,0
 Friday April 28 2017,169521,Lambo,Germany,Zerg,Torkk,United States,Protoss,2,0
 Friday April 28 2017,169507,Pono,United States,Zerg,benttwig,United States,Zerg,2,0
 Friday April 28 2017,169506,Catz.pe,Peru,Zerg,Nony,United States,Protoss,2,1
@@ -3898,11 +3898,11 @@ Friday April 28 2017,169492,MCanning,United States,Protoss,GAMETIME,United State
 Friday April 28 2017,169491,uThermal,Netherlands,Terran,Josh.Sc2 (US),United States,Terran,2,0
 Friday April 28 2017,169487,ZergGirl,United States,Zerg,Cuddlebear,United States,Terran,1,2
 Friday April 28 2017,169486,SortOf,Sweden,Zerg,McMonroe,United States,Zerg,2,0
-Friday April 28 2017,169476,TRUE,Korea Republic of,Zerg,DANCINDRAGON,United States,,2,0
+Friday April 28 2017,169476,TRUE,Korea Republic of,Zerg,DANCINDRAGON,United States,Protoss,2,0
 Friday April 28 2017,169472,Pokebunny,United States,Terran,Ghost.Sc2 (US),United States,Terran,2,0
 Friday April 28 2017,169471,TLO,Germany,Zerg,Alexander.Sc2 (US),United States,Terran,2,0
 Friday April 28 2017,169460,PengWin,Switzerland,Zerg,TheoRy,United States,Protoss,2,0
-Friday April 28 2017,169452,Neuro,United States,Zerg,Nistic,United States,,2,1
+Friday April 28 2017,169452,Neuro,United States,Zerg,Nistic,United States,Zerg,2,1
 Friday April 28 2017,169451,Harstem,Netherlands,Protoss,daydrA,United States,Zerg,2,0
 Friday April 28 2017,169522,PandaBearMe,United States,Zerg,Livibee,Australia,Zerg,2,0
 Friday April 28 2017,169446,Kelazhur,Brazil,Terran,Oobios,United States,Zerg,2,0
@@ -3911,9 +3911,9 @@ Friday April 28 2017,169512,Caliber,United States,Protoss,nice__username,United 
 Friday April 28 2017,169511,MaNa,Poland,Protoss,BuCee,United States,Terran,2,0
 Friday April 28 2017,169497,FeaR.SC2,Germany,Protoss,WarreN,United States,Zerg,2,0
 Friday April 28 2017,169496,Bly,Ukraine,Zerg,Silky (American),United States,Zerg,2,0
-Friday April 28 2017,169482,SirRobin,United States,,Timorus,United States,Terran,2,0
+Friday April 28 2017,169482,SirRobin,United States,Zerg,Timorus,United States,Terran,2,0
 Friday April 28 2017,169481,MaSa,Canada,Terran,Words,United States,Terran,2,0
-Friday April 28 2017,169476,TRUE,Korea Republic of,Zerg,DANCINDRAGON,United States,,2,0
+Friday April 28 2017,169476,TRUE,Korea Republic of,Zerg,DANCINDRAGON,United States,Protoss,2,0
 Friday April 28 2017,169467,ViBE,United States,Zerg,Allaryce,United States,Zerg,2,0
 Friday April 28 2017,169466,Namshar,Sweden,Zerg,Serphim,United States,Protoss,2,0
 Friday April 28 2017,169462,Cyan,China,Protoss,Creature,United States,Protoss,0,2
@@ -3934,7 +3934,7 @@ Friday April 28 2017,169498,Bly,Ukraine,Zerg,FeaR.SC2,Germany,Protoss,2,0
 Friday April 28 2017,169489,McMonroe,United States,Zerg,ZergGirl,United States,Zerg,2,0
 Friday April 28 2017,169488,SortOf,Sweden,Zerg,Cuddlebear,United States,Terran,2,0
 Friday April 28 2017,169484,Words,United States,Terran,Timorus,United States,Terran,2,0
-Friday April 28 2017,169483,MaSa,Canada,Terran,SirRobin,United States,,2,0
+Friday April 28 2017,169483,MaSa,Canada,Terran,SirRobin,United States,Zerg,2,0
 Friday April 28 2017,169469,Serphim,United States,Protoss,Allaryce,United States,Zerg,0,2
 Friday April 28 2017,169468,Namshar,Sweden,Zerg,ViBE,United States,Zerg,2,0
 Friday April 28 2017,169454,daydrA,United States,Zerg,Nistic,United States,Zerg,2,1
@@ -3946,7 +3946,7 @@ Friday April 28 2017,169499,Silky (American),United States,Zerg,WarreN,United St
 Friday April 28 2017,169498,Bly,Ukraine,Zerg,FeaR.SC2,Germany,Protoss,2,0
 Friday April 28 2017,169514,BuCee,United States,Terran,nice__username,United States,Terran,0,2
 Friday April 28 2017,169484,Words,United States,Terran,Timorus,United States,Terran,2,0
-Friday April 28 2017,169483,MaSa,Canada,Terran,SirRobin,United States,,2,0
+Friday April 28 2017,169483,MaSa,Canada,Terran,SirRobin,United States,Zerg,2,0
 Friday April 28 2017,169513,MaNa,Poland,Protoss,Caliber,United States,Protoss,2,1
 Friday April 28 2017,169468,Namshar,Sweden,Zerg,ViBE,United States,Zerg,2,0
 Friday April 28 2017,169464,Mokomi,United States,Protoss,Cyan,China,Protoss,2,0
@@ -4074,7 +4074,7 @@ Saturday July 1 2017,182758,Rogue,Korea Republic of,Zerg,ByuN,Korea Republic of,
 Saturday July 1 2017,178658,HalfBreed,Chile,Zerg,Cham,Mexico,Zerg,1,3
 Saturday July 1 2017,178660,SpeCial.Sc2,Mexico,Terran,Smile.pe,Peru,Terran,3,1
 Saturday July 1 2017,178665,Ryu.sc2,Peru,Zerg,Smile.pe,Peru,Terran,2,0
-Saturday July 1 2017,178664,Maker.,Mexico,Terran,HalfBreed,Chile,,0,2
+Saturday July 1 2017,178664,Maker.,Mexico,Terran,HalfBreed,Chile,Zerg,0,2
 Saturday July 1 2017,178662,Scam,France,Zerg,SpeCial.Sc2,Mexico,Terran,0,3
 Saturday July 1 2017,178661,Kelazhur,Brazil,Terran,Cham,Mexico,Zerg,3,1
 Sunday July 2 2017,178666,Cham,Mexico,Zerg,HalfBreed,Chile,Zerg,2,0
@@ -4336,7 +4336,7 @@ Friday September 8 2017,197024,Creature,United States,Protoss,Painkiller.sc2,Can
 Friday September 8 2017,197023,uThermal,Netherlands,Terran,MaDSci,Canada,Terran,2,0
 Friday September 8 2017,197009,souL,Poland,Terran,EnderSword,Canada,Protoss,2,0
 Friday September 8 2017,197008,PiLiPiLi,Kazakhstan,Protoss,Spyderslayer,United States,Zerg,2,0
-Friday September 8 2017,197078,Semper,Canada,Terran,ObiWanPwnobi,United States,,2,0
+Friday September 8 2017,197078,Semper,Canada,Terran,ObiWanPwnobi,United States,Protoss,2,0
 Friday September 8 2017,197014,Pokebunny,United States,Terran,UpATree,Canada,Terran,2,0
 Friday September 8 2017,197073,MightyKiwi,Australia,Zerg,ZergGirl,United States,Zerg,2,0
 Friday September 8 2017,197069,Bioice,Canada,Zerg,eXiled,Canada,Protoss,2,0
@@ -4362,7 +4362,7 @@ Friday September 8 2017,197019,GAMETIME,United States,Zerg,TheoRy,United States,
 Friday September 8 2017,196933,Solar,Korea Republic of,Zerg,ByuN,Korea Republic of,Terran,1,3
 Friday September 8 2017,197021,Bones,Canada,Protoss,TheoRy,United States,Protoss,1,2
 Friday September 8 2017,197020,Lambo,Germany,Zerg,GAMETIME,United States,Zerg,2,1
-Friday September 8 2017,197016,Lalugi,Canada,,UpATree,Canada,Terran,0,2
+Friday September 8 2017,197016,Lalugi,Canada,Zerg,UpATree,Canada,Terran,0,2
 Friday September 8 2017,197015,SpeCial.Sc2,Mexico,Terran,Pokebunny,United States,Terran,2,0
 Friday September 8 2017,197011,Spyderslayer,United States,Zerg,EnderSword,Canada,Protoss,2,0
 Friday September 8 2017,197010,PiLiPiLi,Kazakhstan,Protoss,souL,Poland,Terran,0,2
@@ -4749,16 +4749,16 @@ Thursday November 16 2017,208126,Impact,Korea Republic of,Zerg,Hurricane,Korea R
 Thursday November 16 2017,208128,Hurricane,Korea Republic of,Protoss,KeeN,Korea Republic of,Terran,3,0
 Saturday November 18 2017,209298,Serral,Finland,Zerg,PuPu,Finland,Zerg,3,0
 Saturday November 18 2017,209299,ZhuGeLiang,Finland,Zerg,Jagelius,Finland,Protoss,3,0
-Saturday November 18 2017,208130,Indy,Poland,,Gremory,Poland,Zerg,2,0
+Saturday November 18 2017,208130,Indy,Poland,Protoss,Gremory,Poland,Zerg,2,0
 Saturday November 18 2017,210192,SpeCial.Sc2,Mexico,Terran,MacSed,China,Protoss,3,0
 Saturday November 18 2017,208131,ArT.Sc2,Poland,Protoss,Guru,Poland,Zerg,1,2
 Saturday November 18 2017,209312,Alluton,Finland,Protoss,PuPu,Finland,Zerg,1,3
 Saturday November 18 2017,210193,Hurricane,Korea Republic of,Protoss,Xigua,China,Zerg,0,3
-Saturday November 18 2017,208132,Guru,Poland,Zerg,Indy,Poland,,2,1
+Saturday November 18 2017,208132,Guru,Poland,Zerg,Indy,Poland,Protoss,2,1
 Saturday November 18 2017,208133,ArT.Sc2,Poland,Protoss,Gremory,Poland,Zerg,2,0
 Saturday November 18 2017,210194,iAsonu,China,Zerg,TooDming,China,Zerg,1,3
 Saturday November 18 2017,209311,Jagelius,Finland,Protoss,Protosser,Finland,Zerg,3,0
-Saturday November 18 2017,208134,ArT.Sc2,Poland,Protoss,Indy,Poland,,1,2
+Saturday November 18 2017,208134,ArT.Sc2,Poland,Protoss,Indy,Poland,Protoss,1,2
 Saturday November 18 2017,209313,Jagelius,Finland,Protoss,PuPu,Finland,Zerg,0,3
 Saturday November 18 2017,210195,TIME.sc2,China,Terran,Neeb,United States,Protoss,2,3
 Saturday November 18 2017,208135,niceq,Poland,Terran,Gerald,Poland,Protoss,0,2
@@ -5159,7 +5159,7 @@ Friday January 5 2018,218663,aLive,Korea Republic of,Terran,Ascarecrow,Australia
 Friday January 5 2018,218658,Shana.SC2,China,Protoss,herO.kr,Korea Republic of,Protoss,0,2
 Friday January 5 2018,218651,aLive,Korea Republic of,Terran,TLO,Germany,Zerg,1,1
 Friday January 5 2018,218662,Shana.SC2,China,Protoss,TLO,Germany,Zerg,0,2
-Friday January 5 2018,218661,Kelazhur,Brazil,Terran,Ascarecrow,Australia,,2,0
+Friday January 5 2018,218661,Kelazhur,Brazil,Terran,Ascarecrow,Australia,Zerg,2,0
 Friday January 5 2018,218653,herO.kr,Korea Republic of,Protoss,Kelazhur,Brazil,Terran,2,0
 Friday January 5 2018,218652,Ascarecrow,Australia,Zerg,Shana.SC2,China,Protoss,1,1
 Friday January 5 2018,218660,aLive,Korea Republic of,Terran,herO.kr,Korea Republic of,Protoss,0,2
@@ -5188,23 +5188,23 @@ Saturday January 6 2018,219222,PtitDrogo,France,Protoss,Harstem,Netherlands,Prot
 Saturday January 6 2018,219228,souL,Poland,Terran,Stephano,France,Zerg,0,2
 Saturday January 6 2018,219234,Snute,Norway,Zerg,Zanster,Sweden,Zerg,2,1
 Saturday January 6 2018,219240,ShoWTimE.,Germany,Protoss,Bly,Ukraine,Zerg,0,2
-Sunday January 7 2018,219252,Silky.us,United States,,NoRegreT,Canada,Zerg,0,2
+Sunday January 7 2018,219252,Silky.us,United States,Zerg,NoRegreT,Canada,Zerg,0,2
 Sunday January 7 2018,219260,MaSa,Canada,Terran,Dolan,United States,Terran,2,0
 Sunday January 7 2018,219255,puCK,United States,Protoss,PandaBearMe,United States,Zerg,1,2
 Sunday January 7 2018,219254,Scarlett,Canada,Zerg,MCanning,United States,Protoss,2,0
 Sunday January 7 2018,219261,Semper,Canada,Terran,GAMETIME,United States,Zerg,2,0
-Sunday January 7 2018,219249,NoRegreT,Canada,Zerg,Silky.us,United States,,0,2
+Sunday January 7 2018,219249,NoRegreT,Canada,Zerg,Silky.us,United States,Zerg,0,2
 Sunday January 7 2018,219248,TRUE,Korea Republic of,Zerg,Pokebunny,United States,Terran,2,0
 Sunday January 7 2018,219243,JonSnow,United States,Zerg,Raze.Sc2 (US),United States,Terran,2,1
-Sunday January 7 2018,219242,Neeb,United States,Protoss,Voltz,United States,,2,0
-Sunday January 7 2018,219250,TRUE,Korea Republic of,Zerg,Silky.us,United States,,2,1
+Sunday January 7 2018,219242,Neeb,United States,Protoss,Voltz,United States,Zerg,2,0
+Sunday January 7 2018,219250,TRUE,Korea Republic of,Zerg,Silky.us,United States,Zerg,2,1
 Sunday January 7 2018,219244,Neeb,United States,Protoss,JonSnow,United States,Zerg,2,1
 Sunday January 7 2018,219256,Scarlett,Canada,Zerg,PandaBearMe,United States,Zerg,2,1
 Sunday January 7 2018,219262,MaSa,Canada,Terran,Semper,Canada,Terran,2,1
 Sunday January 7 2018,219251,Pokebunny,United States,Terran,NoRegreT,Canada,Zerg,0,2
 Sunday January 7 2018,219263,Dolan,United States,Terran,GAMETIME,United States,Zerg,0,2
 Sunday January 7 2018,219257,MCanning,United States,Protoss,puCK,United States,Protoss,0,2
-Sunday January 7 2018,219245,Voltz,United States,,Raze.Sc2 (US),United States,Terran,0,2
+Sunday January 7 2018,219245,Voltz,United States,Zerg,Raze.Sc2 (US),United States,Terran,0,2
 Sunday January 7 2018,219258,PandaBearMe,United States,Zerg,puCK,United States,Protoss,1,2
 Sunday January 7 2018,219264,Semper,Canada,Terran,GAMETIME,United States,Zerg,2,0
 Sunday January 7 2018,219246,JonSnow,United States,Zerg,Raze.Sc2 (US),United States,Terran,2,0
@@ -5245,7 +5245,7 @@ Monday January 8 2018,218693,JonSnow,United States,Zerg,Kas,Ukraine,Terran,2,0
 Monday January 8 2018,218692,PiLiPiLi,Kazakhstan,Protoss,Voltz,United States,Zerg,1,1
 Monday January 8 2018,218691,MaSa,Canada,Terran,Kas,Ukraine,Terran,1,1
 Monday January 8 2018,218690,JonSnow,United States,Zerg,KeeN,Korea Republic of,Terran,2,0
-Monday January 8 2018,218689,Voltz,United States,,Kas,Ukraine,Terran,0,2
+Monday January 8 2018,218689,Voltz,United States,Zerg,Kas,Ukraine,Terran,0,2
 Monday January 8 2018,218688,PiLiPiLi,Kazakhstan,Protoss,KeeN,Korea Republic of,Terran,2,0
 Monday January 8 2018,218687,JonSnow,United States,Zerg,MaSa,Canada,Terran,1,1
 Monday January 8 2018,218686,Kas,Ukraine,Terran,KeeN,Korea Republic of,Terran,0,2
@@ -5274,10 +5274,10 @@ Wednesday January 10 2018,220091,FunK.,Switzerland,Protoss,Niroxs,Switzerland,Ze
 Thursday January 11 2018,217053,Ranger.my,Malaysia,Protoss,Raise.kz,Kazakhstan,Protoss,2,0
 Thursday January 11 2018,217052,Maru,Korea Republic of,Terran,Dark.Sc2,Korea Republic of,Zerg,2,0
 Thursday January 11 2018,217068,Probe,Australia,Protoss,TIME.sc2,China,Terran,2,1
-Thursday January 11 2018,217070,BlackNight.ir,Iran Islamic Republic of,,Has,Taiwan,Protoss,0,2
+Thursday January 11 2018,217070,BlackNight.ir,Iran Islamic Republic of,Terran,Has,Taiwan,Protoss,0,2
 Thursday January 11 2018,217054,Blysk,Singapore,Protoss,Dark.Sc2,Korea Republic of,Zerg,0,2
 Thursday January 11 2018,217058,Dark.Sc2,Korea Republic of,Zerg,Raise.kz,Kazakhstan,Protoss,2,0
-Thursday January 11 2018,217066,BlackNight.ir,Iran Islamic Republic of,,Probe,Australia,Protoss,0,2
+Thursday January 11 2018,217066,BlackNight.ir,Iran Islamic Republic of,Terran,Probe,Australia,Protoss,0,2
 Thursday January 11 2018,217061,Has,Taiwan,Protoss,TIME.sc2,China,Terran,0,2
 Thursday January 11 2018,217064,Has,Taiwan,Protoss,Probe,Australia,Protoss,2,0
 Thursday January 11 2018,217059,Ranger.my,Malaysia,Protoss,Maru,Korea Republic of,Terran,0,2
@@ -5285,24 +5285,24 @@ Thursday January 11 2018,217057,Blysk,Singapore,Protoss,Maru,Korea Republic of,T
 Thursday January 11 2018,217056,Ranger.my,Malaysia,Protoss,Dark.Sc2,Korea Republic of,Zerg,0,2
 Thursday January 11 2018,217065,TIME.sc2,China,Terran,HuT,Australia,Terran,2,0
 Thursday January 11 2018,217067,Has,Taiwan,Protoss,HuT,Australia,Terran,2,0
-Thursday January 11 2018,217063,BlackNight.ir,Iran Islamic Republic of,,TIME.sc2,China,Terran,0,2
+Thursday January 11 2018,217063,BlackNight.ir,Iran Islamic Republic of,Terran,TIME.sc2,China,Terran,0,2
 Thursday January 11 2018,217051,Elusory,Singapore,Terran,Raise.kz,Kazakhstan,Protoss,2,0
 Friday January 12 2018,217079,MightyKiwi,Australia,Zerg,Classic,Korea Republic of,Protoss,0,2
-Friday January 12 2018,217086,WuMin,Taiwan,,EnDerr,Philippines,Zerg,2,1
+Friday January 12 2018,217086,WuMin,Taiwan,Protoss,EnDerr,Philippines,Zerg,2,1
 Friday January 12 2018,217080,MightyKiwi,Australia,Zerg,Xigua,China,Zerg,0,2
 Friday January 12 2018,217081,Bourbond,Indonesia,Terran,StriKE.th,Thailand,Terran,0,2
 Friday January 12 2018,217071,Xigua,China,Zerg,Sioras,Mongolia,Zerg,2,1
 Friday January 12 2018,217073,MightyKiwi,Australia,Zerg,Sioras,Mongolia,Zerg,1,2
 Friday January 12 2018,217076,MightyKiwi,Australia,Zerg,Asura.vt,Viet Nam,Zerg,2,0
 Friday January 12 2018,217084,Bourbond,Indonesia,Terran,EnDerr,Philippines,Zerg,0,2
-Friday January 12 2018,217090,WuMin,Taiwan,,Bourbond,Indonesia,Terran,2,0
+Friday January 12 2018,217090,WuMin,Taiwan,Protoss,Bourbond,Indonesia,Terran,2,0
 Friday January 12 2018,217088,EnDerr,Philippines,Zerg,StriKE.th,Thailand,Terran,2,1
 Friday January 12 2018,217074,Xigua,China,Zerg,Asura.vt,Viet Nam,Zerg,2,0
 Friday January 12 2018,217075,Sioras,Mongolia,Zerg,Classic,Korea Republic of,Protoss,0,2
-Friday January 12 2018,217089,Nice.SC2,Taiwan,Protoss,Saito,Jordan,,2,0
+Friday January 12 2018,217089,Nice.SC2,Taiwan,Protoss,Saito,Jordan,Zerg,2,0
 Friday January 12 2018,217077,Xigua,China,Zerg,Classic,Korea Republic of,Protoss,0,2
 Friday January 12 2018,217083,Nice.SC2,Taiwan,Protoss,StriKE.th,Thailand,Terran,2,0
-Friday January 12 2018,217087,Bourbond,Indonesia,Terran,Saito,Jordan,,2,0
+Friday January 12 2018,217087,Bourbond,Indonesia,Terran,Saito,Jordan,Zerg,2,0
 Saturday January 13 2018,222541,Has,Taiwan,Protoss,Sioras,Mongolia,Zerg,3,0
 Saturday January 13 2018,219183,Scarlett,Canada,Zerg,aLive,Korea Republic of,Terran,1,2
 Saturday January 13 2018,219182,Rogue,Korea Republic of,Zerg,Billowy,Korea Republic of,Protoss,2,0
@@ -5319,7 +5319,7 @@ Saturday January 13 2018,222551,Dark.Sc2,Korea Republic of,Zerg,Nice.SC2,Taiwan,
 Saturday January 13 2018,222165,Future,United States,Protoss,TRUE,Korea Republic of,Zerg,1,3
 Saturday January 13 2018,222059,starkiller.us,United States,Zerg,Nice.SC2,Taiwan,Protoss,0,3
 Saturday January 13 2018,222063,Neeb,United States,Protoss,Nice.SC2,Taiwan,Protoss,3,1
-Saturday January 13 2018,222173,starkiller.us,United States,,TRUE,Korea Republic of,Zerg,1,3
+Saturday January 13 2018,222173,starkiller.us,United States,Zerg,TRUE,Korea Republic of,Zerg,1,3
 Saturday January 13 2018,222156,Semper,Canada,Terran,Impact,Korea Republic of,Zerg,2,3
 Saturday January 13 2018,222174,Bly,Ukraine,Zerg,herO.kr,Korea Republic of,Protoss,2,3
 Saturday January 13 2018,222180,TRUE,Korea Republic of,Zerg,herO.kr,Korea Republic of,Protoss,3,1
@@ -6266,11 +6266,11 @@ Sunday April 15 2018,240623,uThermal,Netherlands,Terran,souL,Poland,Terran,2,0
 Sunday April 15 2018,240625,Clem,France,Terran,souL,Poland,Terran,0,2
 Sunday April 15 2018,240624,Nerchio,Poland,Zerg,uThermal,Netherlands,Terran,0,2
 Sunday April 15 2018,240626,Nerchio,Poland,Zerg,souL,Poland,Terran,2,0
-Sunday April 15 2018,240644,Semper,Canada,Terran,Silky.us,United States,,2,1
+Sunday April 15 2018,240644,Semper,Canada,Terran,Silky.us,United States,Zerg,2,1
 Sunday April 15 2018,240643,Scarlett,Canada,Zerg,Kane,Canada,Zerg,2,0
-Sunday April 15 2018,240646,Kane,Canada,Zerg,Silky.us,United States,,0,2
+Sunday April 15 2018,240646,Kane,Canada,Zerg,Silky.us,United States,Zerg,0,2
 Sunday April 15 2018,240645,Scarlett,Canada,Zerg,Semper,Canada,Terran,2,0
-Sunday April 15 2018,240647,Semper,Canada,Terran,Silky.us,United States,,2,0
+Sunday April 15 2018,240647,Semper,Canada,Terran,Silky.us,United States,Zerg,2,0
 Monday April 16 2018,240635,Leenock,Korea Republic of,Zerg,Impact,Korea Republic of,Zerg,0,3
 Monday April 16 2018,240634,herO.kr,Korea Republic of,Protoss,Stats,Korea Republic of,Protoss,3,1
 Monday April 16 2018,235312,Scrabblem,Poland,Terran,SoBoTeK,Poland,Terran,1,2
@@ -6334,9 +6334,9 @@ Saturday April 21 2018,240629,Bly,Ukraine,Zerg,PtitDrogo,France,Protoss,0,2
 Saturday April 21 2018,240631,Starbuck,Slovenia,Zerg,Bly,Ukraine,Zerg,0,2
 Saturday April 21 2018,240630,Serral,Finland,Zerg,PtitDrogo,France,Protoss,2,0
 Saturday April 21 2018,240632,PtitDrogo,France,Protoss,Bly,Ukraine,Zerg,2,0
-Saturday April 21 2018,241703,MaSa,Canada,Terran,starkiller.us,United States,,2,0
+Saturday April 21 2018,241703,MaSa,Canada,Terran,starkiller.us,United States,Zerg,2,0
 Saturday April 21 2018,241704,PandaBearMe,United States,Zerg,Cicada,United States,Zerg,0,2
-Saturday April 21 2018,241706,starkiller.us,United States,,PandaBearMe,United States,Zerg,0,2
+Saturday April 21 2018,241706,starkiller.us,United States,Zerg,PandaBearMe,United States,Zerg,0,2
 Saturday April 21 2018,241705,MaSa,Canada,Terran,Cicada,United States,Zerg,2,0
 Saturday April 21 2018,241707,Cicada,United States,Zerg,PandaBearMe,United States,Zerg,1,2
 Sunday April 22 2018,241050,SpeCial.Sc2,Mexico,Terran,TheZergLord,Brazil,Zerg,2,0
@@ -6433,7 +6433,7 @@ Saturday April 28 2018,242687,MariK,Germany,Protoss,niceq,Poland,Terran,0,2
 Saturday April 28 2018,242681,captainfail,Canada,Zerg,Kozan,United States,Terran,2,0
 Saturday April 28 2018,242680,MeomaikA,Viet Nam,Zerg,Seigifried,United States,Protoss,2,1
 Saturday April 28 2018,242686,Future,United States,Protoss,HeltEn,Norway,Terran,2,1
-Saturday April 28 2018,242690,eGGz,Colombia,Zerg,starkiller.us,United States,,0,2
+Saturday April 28 2018,242690,eGGz,Colombia,Zerg,starkiller.us,United States,Zerg,0,2
 Saturday April 28 2018,242696,McMonroe,United States,Zerg,Maplez,Canada,Protoss,2,0
 Saturday April 28 2018,242691,Railgan,Switzerland,Zerg,Sinner,Mexico,Terran,2,0
 Saturday April 28 2018,242685,HeltEn,Norway,Terran,niceq,Poland,Terran,2,0
@@ -6442,11 +6442,11 @@ Saturday April 28 2018,242682,Seigifried,United States,Protoss,captainfail,Canad
 Saturday April 28 2018,242679,Kozan,United States,Terran,Seigifried,United States,Protoss,0,2
 Saturday April 28 2018,242678,MeomaikA,Viet Nam,Zerg,captainfail,Canada,Zerg,2,0
 Saturday April 28 2018,242697,WarreN,United States,Zerg,JackO,Netherlands,Protoss,1,2
-Saturday April 28 2018,242692,starkiller.us,United States,,Railgan,Switzerland,Zerg,1,2
+Saturday April 28 2018,242692,starkiller.us,United States,Zerg,Railgan,Switzerland,Zerg,1,2
 Saturday April 28 2018,242699,Maplez,Canada,Protoss,WarreN,United States,Zerg,2,1
 Saturday April 28 2018,242698,McMonroe,United States,Zerg,JackO,Netherlands,Protoss,2,0
 Saturday April 28 2018,242693,eGGz,Colombia,Zerg,Sinner,Mexico,Terran,0,2
-Saturday April 28 2018,242694,starkiller.us,United States,,Sinner,Mexico,Terran,2,0
+Saturday April 28 2018,242694,starkiller.us,United States,Zerg,Sinner,Mexico,Terran,2,0
 Saturday April 28 2018,242688,HeltEn,Norway,Terran,niceq,Poland,Terran,2,0
 Saturday April 28 2018,242700,Maplez,Canada,Protoss,JackO,Netherlands,Protoss,1,2
 Sunday April 29 2018,242591,Hurricane,Korea Republic of,Protoss,Bly,Ukraine,Zerg,1,0
@@ -6545,7 +6545,7 @@ Saturday May 5 2018,243177,Ditrih,Russian Federation,Protoss,Ryosis,Italy,Zerg,3
 Saturday May 5 2018,243198,NeGaN,Russian Federation,Terran,JackO,Netherlands,Protoss,0,3
 Saturday May 5 2018,243197,Luolis,Finland,Terran,BlackMikes,Czech Republic,Terran,2,3
 Saturday May 5 2018,243180,Ryosis,Italy,Zerg,Aelith,Germany,Zerg,0,3
-Saturday May 5 2018,243186,Forescene,Germany,Zerg,Nistic,United States,,0,3
+Saturday May 5 2018,243186,Forescene,Germany,Zerg,Nistic,United States,Zerg,0,3
 Saturday May 5 2018,243185,FireFoX.fr,France,Zerg,Keiras,Czech Republic,Zerg,3,1
 Saturday May 5 2018,243183,FireFoX.fr,France,Zerg,Forescene,Germany,Zerg,3,0
 Saturday May 5 2018,243191,NoLimit,Czech Republic,Zerg,Karlooo,Croatia,Protoss,3,0
@@ -6665,7 +6665,7 @@ Saturday May 12 2018,243194,BlackMikes,Czech Republic,Terran,NeGaN,Russian Feder
 Saturday May 12 2018,243190,niceq,Poland,Terran,Karlooo,Croatia,Protoss,3,0
 Saturday May 12 2018,243189,NoLimit,Czech Republic,Zerg,TBLM,Netherlands,Zerg,3,0
 Saturday May 12 2018,243188,Karlooo,Croatia,Protoss,TBLM,Netherlands,Zerg,3,0
-Saturday May 12 2018,243184,Nistic,United States,,Keiras,Czech Republic,Zerg,3,1
+Saturday May 12 2018,243184,Nistic,United States,Zerg,Keiras,Czech Republic,Zerg,3,1
 Saturday May 12 2018,243178,Aelith,Germany,Zerg,Ziomek,Poland,,3,1
 Saturday May 12 2018,243172,Hopt,Slovakia,Terran,MisterL,Germany,Terran,0,3
 Saturday May 12 2018,243171,Seigifried,United States,Protoss,LIGHTWEIGHT,Kazakhstan,Protoss,3,0
@@ -6714,7 +6714,7 @@ Saturday May 19 2018,246013,Namshar,Sweden,Zerg,Snute,Norway,Zerg,3,2
 Saturday May 19 2018,246018,Guru,Poland,Zerg,Namshar,Sweden,Zerg,1,3
 Saturday May 19 2018,243192,TBLM,Netherlands,Zerg,niceq,Poland,Terran,1,3
 Saturday May 19 2018,246014,LilleKanin,Denmark,Terran,Romson,Poland,Protoss,1,3
-Saturday May 19 2018,243181,FireFoX.fr,France,Zerg,Nistic,United States,,3,0
+Saturday May 19 2018,243181,FireFoX.fr,France,Zerg,Nistic,United States,Zerg,3,0
 Saturday May 19 2018,243187,NoLimit,Czech Republic,Zerg,niceq,Poland,Terran,3,0
 Saturday May 19 2018,246019,Romson,Poland,Protoss,souL,Poland,Terran,1,3
 Saturday May 19 2018,243193,Luolis,Finland,Terran,JackO,Netherlands,Protoss,1,3
@@ -6865,11 +6865,11 @@ Saturday June 16 2018,251451,Lambo,Germany,Zerg,Bly,Ukraine,Zerg,0,2
 Saturday June 16 2018,251452,souL,Poland,Terran,Bly,Ukraine,Zerg,0,2
 Saturday June 16 2018,251453,ShoWTimE.,Germany,Protoss,Lambo,Germany,Zerg,0,2
 Saturday June 16 2018,251454,souL,Poland,Terran,Lambo,Germany,Zerg,2,0
-Saturday June 16 2018,251469,Semper,Canada,Terran,Silky.us,United States,,2,0
+Saturday June 16 2018,251469,Semper,Canada,Terran,Silky.us,United States,Zerg,2,0
 Saturday June 16 2018,251468,Scarlett,Canada,Zerg,Vindicta,United States,Terran,2,0
-Saturday June 16 2018,251471,Vindicta,United States,Terran,Silky.us,United States,,1,2
+Saturday June 16 2018,251471,Vindicta,United States,Terran,Silky.us,United States,Zerg,1,2
 Saturday June 16 2018,251470,Scarlett,Canada,Zerg,Semper,Canada,Terran,2,1
-Saturday June 16 2018,251472,Silky.us,United States,,Semper,Canada,Terran,2,1
+Saturday June 16 2018,251472,Silky.us,United States,Zerg,Semper,Canada,Terran,2,1
 Sunday June 17 2018,248936,TerraN,Brazil,,Starmaster,Brazil,,3,0
 Sunday June 17 2018,248937,Erik,Brazil,Zerg,ManoManolo,Brazil,,3,0
 Sunday June 17 2018,248938,Tunico,Brazil,Zerg,Zinho,Brazil,Protoss,3,0
@@ -6887,9 +6887,9 @@ Sunday June 17 2018,252542,McMonroe,United States,Zerg,JackO,Netherlands,Protoss
 Sunday June 17 2018,252541,Jardozer,United States,Zerg,NoLimit,Czech Republic,Zerg,1,2
 Sunday June 17 2018,252540,NoLimit,Czech Republic,Zerg,JackO,Netherlands,Protoss,2,0
 Sunday June 17 2018,252539,McMonroe,United States,Zerg,Jardozer,United States,Zerg,0,2
-Sunday June 17 2018,252537,Nistic,United States,,TheGiantNome,United States,Zerg,0,2
+Sunday June 17 2018,252537,Nistic,United States,Zerg,TheGiantNome,United States,Zerg,0,2
 Sunday June 17 2018,252536,MeomaikA,Viet Nam,Zerg,TheGiantNome,United States,Zerg,0,2
-Sunday June 17 2018,252535,Nistic,United States,,Railgan,Switzerland,Zerg,0,2
+Sunday June 17 2018,252535,Nistic,United States,Zerg,Railgan,Switzerland,Zerg,0,2
 Sunday June 17 2018,252527,Future,United States,Protoss,frugs,United Kingdom,Zerg,2,0
 Sunday June 17 2018,251463,JonSnow,United States,Zerg,MCanning,United States,Protoss,2,0
 Sunday June 17 2018,252546,Gerald,Poland,Protoss,CalebAracous,United States,Zerg,2,1
@@ -7624,8 +7624,8 @@ Saturday August 4 2018,261075,MaNa,Poland,Protoss,Lambo,Germany,Zerg,3,2
 Saturday August 4 2018,260891,Clem,France,Terran,InZane,Germany,Terran,2,0
 Saturday August 4 2018,260892,MaNa,Poland,Protoss,Denver,France,Zerg,2,0
 Saturday August 4 2018,260889,MaNa,Poland,Protoss,Clem,France,Terran,2,0
-Saturday August 4 2018,260272,Nistic,United States,,Rob.sc2,United States,Terran,2,0
-Saturday August 4 2018,260273,Nistic,United States,,Spazymazy,Denmark,Zerg,2,0
+Saturday August 4 2018,260272,Nistic,United States,Zerg,Rob.sc2,United States,Terran,2,0
+Saturday August 4 2018,260273,Nistic,United States,Zerg,Spazymazy,Denmark,Zerg,2,0
 Saturday August 4 2018,260275,Kozan,United States,Terran,Össy,Germany,Zerg,2,0
 Saturday August 4 2018,260277,Kozan,United States,Terran,InZane,Germany,Terran,0,2
 Saturday August 4 2018,260884,Elazer,Poland,Zerg,InZane,Germany,Terran,2,0
@@ -7641,7 +7641,7 @@ Saturday August 4 2018,260282,McMonroe,United States,Zerg,jheffe,United States,T
 Saturday August 4 2018,260281,NoLimit,Czech Republic,Zerg,BluE.pl,Poland,,1,2
 Saturday August 4 2018,260279,Kozan,United States,Terran,Ryosis,Italy,Zerg,2,0
 Saturday August 4 2018,260278,Ryosis,Italy,Zerg,Össy,Germany,Zerg,2,1
-Saturday August 4 2018,260269,Spazymazy,Denmark,Zerg,Nistic,United States,,2,0
+Saturday August 4 2018,260269,Spazymazy,Denmark,Zerg,Nistic,United States,Zerg,2,0
 Saturday August 4 2018,260267,starkiller.us,United States,Zerg,YutakaHoshino,Germany,Zerg,2,1
 Saturday August 4 2018,260266,YutakaHoshino,Germany,Zerg,omgabanana,United States,Protoss,2,1
 Saturday August 4 2018,260265,Future,United States,Terran,starkiller.us,United States,Zerg,2,0
@@ -7970,7 +7970,7 @@ Saturday September 1 2018,247427,JackO,Netherlands,Protoss,MariK,Germany,Protoss
 Saturday September 1 2018,247426,MisterL,Germany,Terran,FireFoX.fr,France,Zerg,0,3
 Saturday September 1 2018,247425,GhostHell,Ukraine,Zerg,DarkLycid,Germany,Protoss,3,2
 Saturday September 1 2018,247424,Luolis,Finland,Terran,Railgan,Switzerland,Zerg,0,3
-Saturday September 1 2018,247423,Nistic,United States,,NoLimit,Czech Republic,Zerg,1,3
+Saturday September 1 2018,247423,Nistic,United States,Zerg,NoLimit,Czech Republic,Zerg,1,3
 Saturday September 1 2018,247422,Seigifried,United States,Protoss,Ditrih,Russian Federation,Protoss,0,3
 Saturday September 1 2018,247421,Matvey,Russian Federation,,MariK,Germany,Protoss,1,3
 Saturday September 1 2018,247418,MisterL,Germany,Terran,Aelith,Germany,Zerg,3,2
@@ -7985,13 +7985,13 @@ Saturday September 1 2018,247419,FireFoX.fr,France,Zerg,niceq,Poland,Terran,3,0
 Saturday September 1 2018,263914,Tocon,Poland,,Gremory,Poland,Zerg,0,2
 Saturday September 1 2018,263909,ArT.Sc2,Poland,Protoss,BluE.pl,Poland,,2,0
 Saturday September 1 2018,263911,Tocon,Poland,,BluE.pl,Poland,,0,2
-Saturday September 1 2018,263906,ArT.Sc2,Poland,Protoss,Indy,Poland,,2,0
-Saturday September 1 2018,263910,Indy,Poland,,Gremory,Poland,Zerg,0,2
+Saturday September 1 2018,263906,ArT.Sc2,Poland,Protoss,Indy,Poland,Protoss,2,0
+Saturday September 1 2018,263910,Indy,Poland,Protoss,Gremory,Poland,Zerg,0,2
 Saturday September 1 2018,263912,ArT.Sc2,Poland,Protoss,Gremory,Poland,Zerg,2,0
-Saturday September 1 2018,263913,BluE.pl,Poland,,Indy,Poland,,0,2
+Saturday September 1 2018,263913,BluE.pl,Poland,,Indy,Poland,Protoss,0,2
 Saturday September 1 2018,263915,Tocon,Poland,,ArT.Sc2,Poland,Protoss,0,2
 Saturday September 1 2018,263907,Gremory,Poland,Zerg,BluE.pl,Poland,,1,1
-Saturday September 1 2018,263908,Tocon,Poland,,Indy,Poland,,0,2
+Saturday September 1 2018,263908,Tocon,Poland,,Indy,Poland,Protoss,0,2
 Saturday September 1 2018,263899,Gerald,Poland,Protoss,Rodzyn,Poland,Protoss,1,1
 Saturday September 1 2018,263904,niceq,Poland,Terran,Matiz,Poland,Zerg,0,2
 Saturday September 1 2018,263902,Gerald,Poland,Protoss,Matiz,Poland,Zerg,1,1
@@ -8167,7 +8167,7 @@ Saturday September 15 2018,267334,nice,China,,MacSed,China,Protoss,2,0
 Saturday September 15 2018,267333,KeeN,Korea Republic of,Terran,Cyan,China,Protoss,2,0
 Saturday September 15 2018,267332,Solar,Korea Republic of,Zerg,MacSed,China,Protoss,2,0
 Saturday September 15 2018,267341,nice,China,,Solar,Korea Republic of,Zerg,1,2
-Sunday September 16 2018,267234,Silky.us,United States,,JonSnow,United States,Zerg,1,3
+Sunday September 16 2018,267234,Silky.us,United States,Zerg,JonSnow,United States,Zerg,1,3
 Sunday September 16 2018,267240,Disk,Canada,Protoss,McMonroe,United States,Zerg,1,3
 Sunday September 16 2018,267233,Future,United States,Terran,puCK,United States,Protoss,3,1
 Sunday September 16 2018,267239,Kane,Canada,Zerg,Cham,Mexico,Zerg,1,3
@@ -8388,12 +8388,12 @@ Thursday October 18 2018,272817,Abbadon,France,Terran,Krystianer,Poland,Protoss,
 Thursday October 18 2018,272829,Bly,Ukraine,Zerg,Nice.SC2,Taiwan,Protoss,2,0
 Thursday October 18 2018,272830,WoodedMicrob,Finland,Terran,domickc,Korea Republic of,Protoss,0,2
 Thursday October 18 2018,272830,WoodedMicrob,Finland,Terran,domickc,Korea Republic of,Protoss,0,2
-Thursday October 18 2018,272805,SoulSpirit,France,Zerg,Indy,Poland,,1,2
+Thursday October 18 2018,272805,SoulSpirit,France,Zerg,Indy,Poland,Protoss,1,2
 Thursday October 18 2018,272804,Guru,Poland,Zerg,Cyan,China,Protoss,1,2
 Thursday October 18 2018,272831,Nice.SC2,Taiwan,Protoss,domickc,Korea Republic of,Protoss,0,2
 Thursday October 18 2018,272818,Namshar,Sweden,Zerg,Abbadon,France,,2,1
 Thursday October 18 2018,272812,Vanya,Russian Federation,Zerg,Gerald,Poland,Protoss,0,2
-Thursday October 18 2018,272806,Guru,Poland,Zerg,Indy,Poland,,2,1
+Thursday October 18 2018,272806,Guru,Poland,Zerg,Indy,Poland,Protoss,2,1
 Thursday October 18 2018,272665,JimRising,Mexico,Zerg,hinO,France,Zerg,0,3
 Thursday October 18 2018,272667,Silky.us,United States,Zerg,hinO,France,Zerg,3,1
 Thursday October 18 2018,272661,puCK,United States,Protoss,Bly,Ukraine,Zerg,0,2
@@ -8401,7 +8401,7 @@ Thursday October 18 2018,272664,Ziggy,Poland,Terran,Guru,Poland,Zerg,2,3
 Thursday October 18 2018,272662,Reynor,Italy,Zerg,Silky.us,United States,Zerg,2,0
 Thursday October 18 2018,272666,puCK,United States,Protoss,Guru,Poland,Zerg,0,3
 Friday October 19 2018,272663,Bly,Ukraine,Zerg,Reynor,Italy,Zerg,0,3
-Friday October 19 2018,272668,Guru,Poland,Zerg,Silky.us,United States,,2,1
+Friday October 19 2018,272668,Guru,Poland,Zerg,Silky.us,United States,Zerg,2,1
 Friday October 19 2018,272669,Bly,Ukraine,Zerg,Guru,Poland,Zerg,1,3
 Friday October 19 2018,272670,Reynor,Italy,Zerg,Guru,Poland,Zerg,3,2
 Friday October 19 2018,272692,MaNa,Poland,Protoss,MacSed,China,Protoss,3,0
@@ -8550,7 +8550,7 @@ Friday November 9 2018,275032,NoLimit,Czech Republic,Zerg,Keiras,Czech Republic,
 Friday November 9 2018,275026,Lumpas,Czech Republic,Zerg,Harpner,Czech Republic,Protoss,1,2
 Friday November 9 2018,275030,Korty,Czech Republic,Terran,Harpner,Czech Republic,Protoss,0,2
 Saturday November 10 2018,273878,Neeb,United States,Protoss,puCK,United States,Protoss,3,1
-Saturday November 10 2018,273879,Silky.us,United States,,Future,United States,Terran,3,0
+Saturday November 10 2018,273879,Silky.us,United States,Zerg,Future,United States,Terran,3,0
 Saturday November 10 2018,275096,RiSky.Sc2,United Kingdom,Zerg,Razerblader,United Kingdom,Terran,3,0
 Sunday November 11 2018,275063,Creator,Korea Republic of,Protoss,KeeN,Korea Republic of,Terran,2,3
 Sunday November 11 2018,275064,Taeja,Korea Republic of,Terran,TRUE,Korea Republic of,Zerg,3,0
@@ -8561,7 +8561,7 @@ Sunday November 11 2018,275371,Jim,China,Protoss,Scarlett,Canada,Zerg,1,3
 Sunday November 11 2018,274884,ShadoWn,France,Protoss,Clem,France,Terran,5,0
 Sunday November 11 2018,274885,starkiller.us,United States,Zerg,TerraN,Brazil,Terran,5,4
 Sunday November 11 2018,275458,Souleer,Spain,Zerg,Rote,Spain,Terran,3,2
-Monday November 12 2018,273880,Neeb,United States,Protoss,Silky.us,United States,,3,0
+Monday November 12 2018,273880,Neeb,United States,Protoss,Silky.us,United States,Zerg,3,0
 Monday November 12 2018,274841,PLmalchik,Poland,Zerg,NiBemben,Poland,Terran,0,2
 Monday November 12 2018,274835,Sevnin,Poland,Protoss,Heisswasser,Poland,Terran,2,0
 Monday November 12 2018,274853,DaNa,Poland,Zerg,Saiyan.pl,Poland,Zerg,2,1
@@ -8646,7 +8646,7 @@ Monday November 19 2018,275036,nExt.cz,Czech Republic,Zerg,NoLimit,Czech Republi
 Tuesday November 20 2018,276626,JimRising,Mexico,Zerg,puCK,United States,Protoss,3,2
 Tuesday November 20 2018,276628,MaSa,Canada,Terran,eGGz,Colombia,Zerg,3,1
 Tuesday November 20 2018,276632,Cham,Mexico,Zerg,Future,United States,Terran,3,1
-Tuesday November 20 2018,276627,Kelazhur,Brazil,Terran,Silky.us,United States,,3,0
+Tuesday November 20 2018,276627,Kelazhur,Brazil,Terran,Silky.us,United States,Zerg,3,0
 Tuesday November 20 2018,276829,SunSet.sc2,Ukraine,Zerg,ZipperTheFly,Ukraine,Terran,0,2
 Tuesday November 20 2018,276828,Hellraiser,Ukraine,Protoss,BuRning.sc,Ukraine,Terran,2,0
 Tuesday November 20 2018,276827,Nider,Ukraine,,ZipperTheFly,Ukraine,Terran,0,2
@@ -8942,7 +8942,7 @@ Monday December 3 2018,274865,Vantaleran,Poland,Protoss,Meldior,Poland,Zerg,0,2
 Monday December 3 2018,278543,Scarlett,Canada,Zerg,MaSa,Canada,Terran,1,3
 Tuesday December 4 2018,276651,Jarppi,Chile,Terran,Pacomike,Mexico,Protoss,3,0
 Tuesday December 4 2018,276659,Astrea,United States,Protoss,puCK,United States,Protoss,3,1
-Tuesday December 4 2018,276658,Silky.us,United States,,eGGz,Colombia,Zerg,3,1
+Tuesday December 4 2018,276658,Silky.us,United States,Zerg,eGGz,Colombia,Zerg,3,1
 Tuesday December 4 2018,276657,NoRegreT,Canada,Zerg,Jarppi,Chile,Terran,1,3
 Tuesday December 4 2018,278709,EonBlu,Germany,Zerg,TLO,Germany,Zerg,0,2
 Tuesday December 4 2018,278716,Hellraiser,Ukraine,Protoss,TLO,Germany,Zerg,1,2
@@ -9030,7 +9030,7 @@ Monday December 10 2018,279306,MaNa,Poland,Protoss,Namshar,Sweden,Zerg,1,2
 Monday December 10 2018,279300,Kelazhur,Brazil,Terran,GungFuBanda,Germany,Protoss,2,0
 Monday December 10 2018,279301,souL,Poland,Terran,goblin,Croatia,Protoss,2,0
 Tuesday December 11 2018,276661,JimRising,Mexico,Zerg,Jarppi,Chile,Terran,3,0
-Tuesday December 11 2018,276662,Cham,Mexico,Zerg,Silky.us,United States,,3,1
+Tuesday December 11 2018,276662,Cham,Mexico,Zerg,Silky.us,United States,Zerg,3,1
 Tuesday December 11 2018,276665,Cham,Mexico,Zerg,Astrea,United States,Protoss,2,3
 Tuesday December 11 2018,279222,Bunny.kr,Korea Republic of,Terran,TRUE,Korea Republic of,Zerg,2,0
 Tuesday December 11 2018,279223,uThermal,Netherlands,Terran,Zest,Korea Republic of,Protoss,2,0
@@ -9123,7 +9123,7 @@ Saturday December 15 2018,280000,Rob.sc2,United States,Terran,goblin,Croatia,Pro
 Saturday December 15 2018,279256,Lambo,Germany,Zerg,Clem,France,Terran,5,2
 Saturday December 15 2018,279995,Bly,Ukraine,Zerg,PenguiN,Korea Republic of,Zerg,3,1
 Saturday December 15 2018,280002,ShoWTimE.,Germany,Protoss,starkiller.us,United States,Zerg,3,0
-Saturday December 15 2018,279238,Silky.us,United States,,MaSa,Canada,Terran,0,2
+Saturday December 15 2018,279238,Silky.us,United States,Zerg,MaSa,Canada,Terran,0,2
 Saturday December 15 2018,279232,TLO,Germany,Zerg,puCK,United States,Protoss,2,0
 Sunday December 16 2018,279296,DnS,France,Protoss,Clem,France,Terran,2,1
 Sunday December 16 2018,279257,Solar,Korea Republic of,Zerg,Creator,Korea Republic of,Protoss,1,5
@@ -9720,9 +9720,9 @@ Saturday January 26 2019,286690,Clem,France,Terran,goblin,Croatia,Protoss,3,2
 Saturday January 26 2019,286689,PtitDrogo,France,Protoss,Namshar,Sweden,Zerg,2,3
 Saturday January 26 2019,281681,RotterdaM,Netherlands,Protoss,YoGo,France,Zerg,2,4
 Saturday January 26 2019,286691,Namshar,Sweden,Zerg,Clem,France,Terran,3,0
-Saturday January 26 2019,281682,Alex007,Ukraine,,Indy,Poland,,0,4
+Saturday January 26 2019,281682,Alex007,Ukraine,,Indy,Poland,Protoss,0,4
 Saturday January 26 2019,281684,RotterdaM,Netherlands,Protoss,Alex007,Ukraine,,4,1
-Sunday January 27 2019,281683,YoGo,France,Zerg,Indy,Poland,,1,4
+Sunday January 27 2019,281683,YoGo,France,Zerg,Indy,Poland,Protoss,1,4
 Sunday January 27 2019,283824,GuMiho,Korea Republic of,Terran,Zest,Korea Republic of,Protoss,2,4
 Sunday January 27 2019,283823,Cure,Korea Republic of,Terran,Kelazhur,Brazil,Terran,4,2
 Sunday January 27 2019,283825,Cure,Korea Republic of,Terran,Zest,Korea Republic of,Protoss,2,5

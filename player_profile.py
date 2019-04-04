@@ -1,6 +1,7 @@
 import math
 from datetime import datetime, timedelta
 import helper
+from statistics import mean
 
 class PlayerProfile:
     def __init__(self, name, race, firstDate, region=None):
@@ -45,8 +46,15 @@ class PlayerProfile:
 
         # ELO
         self.elo = 1200
+        self.eloZ = 1200
+        self.eloT = 1200
+        self.eloP = 1200
+
         self.eloK = 32
         self.peakElo = 1200
+        self.peakEloZ = 1200
+        self.peakEloT = 1200
+        self.peakEloP = 1200
 
     def updateRace(self, race):
         self.race = race
@@ -62,18 +70,87 @@ class PlayerProfile:
         # NOTE: playTimeGap is in months
         self.lastPlayedDate = date
 
-        if opponentProfile.race == 'Z':
+        if opponentProfile.race == "Zerg":
             self.winsZ += 1 if win else 0
             self.totalZ += 1
             self.expZ = self.matchAlpha * winNum + self.expZ * (1 - self.matchAlpha)
-        elif opponentProfile.race == 'T':
+            if self.totalZ < 10:
+                self.eloK = 30
+            elif self.eloZ < 2400 and self.peakEloZ < 2400:
+                self.eloK = 15
+            else:
+                self.eloK = 10
+            if not self.region == opponentProfile.region:
+                self.eloK *= 2
+
+            Q_A = 10 ** (self.eloZ / 400)
+            Q_B = 10 ** (mean([opponentProfile.eloZ, opponentProfile.eloT, opponentProfile.eloP]) / 400)
+            if self.race == "Zerg":
+                Q_B = 10 ** (opponentProfile.eloZ / 400)
+            elif self.race == "Terran":
+                Q_B = 10 ** (opponentProfile.eloT / 400)
+            elif self.race == "Protoss":
+                Q_B = 10 ** (opponentProfile.eloP / 400)
+            E_A = Q_A / (Q_A + Q_B)
+
+            # Update Elo
+            self.eloZ = self.eloZ + self.eloK * (winNum - E_A)
+            self.peakEloZ = max(self.eloZ, self.peakEloZ)
+
+        elif opponentProfile.race == "Terran":
             self.winsT += 1 if win else 0
             self.totalT += 1
             self.expT = self.matchAlpha * winNum + self.expT * (1 - self.matchAlpha)
-        elif opponentProfile.race == 'P':
+            if self.totalT < 10:
+                self.eloK = 30
+            elif self.eloT < 2400 and self.peakEloT < 2400:
+                self.eloK = 15
+            else:
+                self.eloK = 10
+            if not self.region == opponentProfile.region:
+                self.eloK *= 2
+
+            Q_A = 10 ** (self.eloT / 400)
+            Q_B = 10 ** (mean([opponentProfile.eloZ, opponentProfile.eloT, opponentProfile.eloP]) / 400)
+            if self.race == "Zerg":
+                Q_B = 10 ** (opponentProfile.eloZ / 400)
+            elif self.race == "Terran":
+                Q_B = 10 ** (opponentProfile.eloT / 400)
+            elif self.race == "Protoss":
+                Q_B = 10 ** (opponentProfile.eloP / 400)
+            E_A = Q_A / (Q_A + Q_B)
+
+            # Update Elo
+            self.eloT = self.eloT + self.eloK * (winNum - E_A)
+            self.peakEloT = max(self.eloT, self.peakEloT)
+
+        elif opponentProfile.race == "Protoss":
             self.winsP += 1 if win else 0
             self.totalP += 1
             self.expP = self.matchAlpha * winNum + self.expP * (1 - self.matchAlpha)
+            if self.totalP < 10:
+                self.eloK = 30
+            elif self.eloP < 2400 and self.peakEloP < 2400:
+                self.eloK = 15
+            else:
+                self.eloK = 10
+            if not self.region == opponentProfile.region:
+                self.eloK *= 2
+
+            Q_A = 10 ** (self.eloZ / 400)
+            Q_B = 10 ** (mean([opponentProfile.eloZ, opponentProfile.eloT, opponentProfile.eloP]) / 400)
+            if self.race == "Zerg":
+                Q_B = 10 ** (opponentProfile.eloZ / 400)
+            elif self.race == "Terran":
+                Q_B = 10 ** (opponentProfile.eloT / 400)
+            elif self.race == "Protoss":
+                Q_B = 10 ** (opponentProfile.eloP / 400)
+            E_A = Q_A / (Q_A + Q_B)
+
+            # Update Elo
+            self.eloP = self.eloP + self.eloK * (winNum - E_A)
+            self.peakEloP = max(self.eloP, self.peakEloP)
+
         self.expOverall = self.matchAlpha * winNum + self.expOverall * (1 - self.matchAlpha)
 
         if self.placementsLeft > 0:
@@ -95,30 +172,25 @@ class PlayerProfile:
         else:
             self.placementResults.append([opponentProfile.glickoRating, opponentProfile.glickoRD, win])
 
-
-        # ELO
-        # if self.elo < 2100:
-        #     self.eloK = 32
-        # elif self.elo <= 2400:
-        #     self.eloK = 24
-        # else:
-        #     self.eloK = 16
+        # Update general Elo
         if self.total < 30:
-            self.eloK = 40
+            self.eloK = 30
         elif self.elo < 2400 and self.peakElo < 2400:
-            self.eloK = 20
+            self.eloK = 15
         else:
             self.eloK = 10
         if not self.region == opponentProfile.region:
             self.eloK *= 2
 
-        Q_A = 10**(self.elo/400)
-        Q_B = 10**(opponentProfile.elo/400)
+        Q_A = 10 ** (self.elo / 400)
+        Q_B = 10 ** (opponentProfile.elo / 400)
         E_A = Q_A / (Q_A + Q_B)
 
         # Update Elo
         self.elo = self.elo + self.eloK * (winNum - E_A)
         self.peakElo = max(self.elo, self.peakElo)
+
+
 
         self.expAverageLastPlayed = self.expAlpha * playTimeGap + self.expAverageLastPlayed * (1 - self.expAlpha)
 
@@ -138,6 +210,9 @@ class PlayerProfile:
 
     def decayElo(self, periods):
         self.elo = (1-self.eloDecay)**periods * (self.elo - 1200) + 1200
+        self.eloZ = (1-self.eloDecay)**periods * (self.eloZ - 1200) + 1200
+        self.eloT = (1 - self.eloDecay) ** periods * (self.eloT - 1200) + 1200
+        self.eloP = (1 - self.eloDecay) ** periods * (self.eloP - 1200) + 1200
 
     def updateGlicko(self, opponentRating, opponentRD, win):
         assert (type(win) == bool)
@@ -205,14 +280,39 @@ class PlayerProfile:
         else:
             timeWeightedRating = self.glickoRating / self.expAverageLastPlayed
 
-        if opponentProfile.race == 'Z':
+        raceElo = self.elo
+        raceQ_A = 10 ** (self.elo / 400)
+        raceQ_B = 10 ** (opponentProfile.elo / 400)
+        raceEXP = self.expOverall
+        raceEloRatio = 1/3
+        if opponentProfile.race == "Zerg":
             normRace = self.expZ - self.expOverall
-        elif opponentProfile.race == 'T':
+            raceElo = self.eloZ
+            raceQ_A = 10 ** (self.eloZ / 400)
+            raceEXP = self.expZ
+            raceEloRatio = self.eloZ / (self.eloZ + self.eloT + self.eloP)
+        elif opponentProfile.race == "Terran":
             normRace = self.expT - self.expOverall
-        elif opponentProfile.race == 'P':
+            raceElo = self.eloT
+            raceQ_A = 10 ** (self.eloT / 400)
+            raceEXP = self.expT
+            raceEloRatio = self.eloT / (self.eloZ + self.eloT + self.eloP)
+        elif opponentProfile.race == "Protoss":
             normRace = self.expP - self.expOverall
+            raceElo = self.eloP
+            raceQ_A = 10 ** (self.eloP / 400)
+            raceEXP = self.expP
+            raceEloRatio = self.eloP / (self.eloZ + self.eloT + self.eloP)
         else:
             normRace = 0.5
+
+        if self.race == "Zerg":
+            raceQ_B = 10 ** (opponentProfile.eloZ / 400)
+        elif self.race == "Terran":
+            raceQ_B = 10 ** (opponentProfile.eloT / 400)
+        elif self.race == "Protoss":
+            raceQ_B = 10 ** (opponentProfile.eloP / 400)
+        raceE_A = raceQ_A / (raceQ_A + raceQ_B)
 
         opponentMu = (opponentProfile.glickoRating - 1500) / 173.7178
         opponentPhi = opponentProfile.glickoRD / 173.7178
@@ -222,7 +322,8 @@ class PlayerProfile:
         Q_B = 10 ** (opponentProfile.elo / 400)
         E_A = Q_A / (Q_A + Q_B)
 
-        return [mu, phi, timeWeightedRating, normRace, glickoE, self.elo, E_A]
+        # raceEloRatio not used, seems to be noisy
+        return [mu, phi, timeWeightedRating, normRace, glickoE, self.elo, E_A, raceElo, raceE_A, self.expOverall, raceEXP]
 
     """
     Helper functions for Glicko calculations
