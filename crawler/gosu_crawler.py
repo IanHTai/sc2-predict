@@ -5,6 +5,7 @@ import time
 import codecs
 import csv
 import string
+import random
 
 class Crawler:
     def __init__(self, url, fileName="../data/matchResults_regionsRaces.csv"):
@@ -59,6 +60,7 @@ class Crawler:
         assert(fromPage <= pages)
         nextPaged = False
         reachedLast = False
+        print("GG Page:", fromPage)
         while not flag:
             url = start + "&page={}"
             soup = BeautifulSoup(requests.get(url.format(fromPage)).content, features="html.parser")
@@ -97,7 +99,8 @@ class Crawler:
             else:
                 nextPaged = False
                 reachedLast = False
-                time.sleep(60*60)
+                randomizer = random.uniform(0.8, 1.2)
+                time.sleep(60*60*2*randomizer)
 
 
 
@@ -109,16 +112,17 @@ class Crawler:
         localMatchList = []
 
         if len(cellMatches) == 0:
+            randomizer = random.uniform(0.5, 1.2)
             if numTries > 13:
-                time.sleep(10800)
+                time.sleep(10800*randomizer)
             elif numTries > 10:
-                time.sleep(3600)
+                time.sleep(3600*randomizer)
             elif numTries > 8:
-                time.sleep(300)
+                time.sleep(300*randomizer)
             elif numTries > 5:
-                time.sleep(30)
+                time.sleep(30*randomizer)
             else:
-                time.sleep(1)
+                time.sleep(5*randomizer)
             return self.getData(soup, numTries + 1, writeFile)
 
 

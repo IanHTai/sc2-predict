@@ -19,6 +19,7 @@ from crawler.gosu_crawler import Crawler
 import threading
 from crawler.lootbet_crawler import LootCrawler, LootMatch
 import time
+import random
 
 class ModelRunner:
     def __init__(self, model, fileName, lastGameId, trainRatio=0.8, testRatio=0.2, startCash = 10000):
@@ -257,7 +258,7 @@ class ModelRunner:
         url = "https://www.gosugamers.net/starcraft2/matches/results?sortBy=date-asc&maxResults=18"
         c = Crawler(url, fileName="data/matchResults_regionsRaces.csv")
         # c.start()
-        liveGen = c.liveGenerator(fromPage=584, lastGameId=self.lastGameId)
+        liveGen = c.liveGenerator(fromPage=593, lastGameId=self.lastGameId)
         for i in liveGen:
             self.profileUpdateQueue.put(i)
 
@@ -269,19 +270,20 @@ class ModelRunner:
                          gosuUrl="https://www.gosugamers.net/starcraft2/matches")
         betOnMatches = {}
         # TODO: Proper Lootbet -> Gosu name matching for people like Dark -> Dark.Sc2, sOs -> sOs.sc2
+        # TODO: Periodically update model, maybe keep track of number of new matches since last update
         while not flag:
             while not self.profileUpdateQueue.empty():
                 rawMatch = self.profileUpdateQueue.get()
                 if rawMatch['Id'] in betOnMatches:
                     print("Result:", rawMatch['Date'], rawMatch['Player1'], rawMatch['Player2'])
                     if int(rawMatch['Score1']) > int(rawMatch['Score2']):
-                        if betOnMatches[rawMatch['Id']][0] == 0:
+                        if betOnMatches[rawMatch['Id']][0] == rawMatch['Player1']:
                             self.cash += betOnMatches[rawMatch['Id']][1]
                             print("Win:", betOnMatches[rawMatch['Id']][1])
                         else:
                             print("Lose:", betOnMatches[rawMatch['Id']][1])
                     elif int(rawMatch['Score1']) < int(rawMatch['Score2']):
-                        if betOnMatches[rawMatch['Id']][0] == 1:
+                        if betOnMatches[rawMatch['Id']][0] == rawMatch['Player2']:
                             self.cash += betOnMatches[rawMatch['Id']][1]
                             print("Win:", betOnMatches[rawMatch['Id']][1])
                         else:
@@ -291,6 +293,7 @@ class ModelRunner:
                         # Assume refund?
                         self.cash += betOnMatches[rawMatch['Id']][2]
                         print("Refund:", betOnMatches[rawMatch['Id']][2])
+                    betOnMatches.pop(rawMatch['Id'])
                     print("New Balance:", self.cash, "ROI Since Start:", (self.cash - self.startcash)/float(self.startcash))
 
                 matchesOut = self.runGame(rawMatch)
@@ -317,17 +320,19 @@ class ModelRunner:
                                 decOdds = dec*match.odds1
                                 print("Bet:", match.player1, "vs", match.player2, "Amount:", dec, "Edge+1:",
                                       p1win * match.odds1, "Prob", p1win)
+                                betOn = match.player1
                             else:
                                 dec = self.betDecision(prob=p2win, odds=match.odds2)
                                 decOdds = dec * match.odds2
                                 print("Bet:", match.player2, "vs", match.player1, "Amount:", dec, "Edge+1:",
                                       p2win * match.odds2, "Prob", p2win)
+                                betOn = match.player2
                             if dec > 0:
-                                betOnMatches[match.id] = [betterBet, decOdds, dec]
+                                betOnMatches[match.id] = [betOn, decOdds, dec]
                                 self.cash -= dec
 
-
-            time.sleep(60 * 60)
+            randomizer = random.uniform(0.8, 1.2)
+            time.sleep(60 * 30 * randomizer)
 
 
     def betDecision(self, odds, prob):
@@ -352,7 +357,7 @@ if __name__ == "__main__":
     model = Logistic()
     #model = SVM(C=10)
     print('Model Created')
-    runner = ModelRunner(model, "data/matchResults_regionsRaces.csv", trainRatio=0.8, testRatio=0.2, lastGameId="297304")
+    runner = ModelRunner(model, "data/matchResults_regionsRaces.csv", trainRatio=0.8, testRatio=0.2, lastGameId="298482")
     print('Model Runner Created')
     runner.runFile(test=True)
     print('File Run')
@@ -376,7 +381,7 @@ if __name__ == "__main__":
         print(rank, runner.profiles[name].name, runner.profiles[name].total, runner.profiles[name].glickoRating, timeSinceFirst, runner.profiles[name].total / timeSinceFirst, runner.profiles[name].elo,
               runner.profiles[name].eloZ, runner.profiles[name].eloT, runner.profiles[name].eloP, "PEAK ELO", runner.profiles[name].peakElo)
         rank += 1
-        if rank >= 20:
+        if rank >= 21:
             break
 
     print("Serral's Match History", "EXPOVERALL:", runner.profiles['Serral'].expOverall, "WINPERCENTAGE:", runner.profiles['Serral'].wins / runner.profiles['Serral'].total)
