@@ -7,13 +7,14 @@ import csv
 import string
 
 class Crawler:
-    def __init__(self, url):
+    def __init__(self, url, fileName="../data/matchResults_regionsRaces.csv"):
         self.url = url
         self.matchList = []
         self.fieldNames = ['Date', 'Id', 'Player1', 'Player1Region', 'Player1Race', 'Player2', 'Player2Region',
                       'Player2Race', 'Score1', 'Score2']
+        self.fileName = fileName
 
-    def start(self):
+    def start(self, fromPage=1):
         start = self.url
         page = requests.get(start).content
         soup = BeautifulSoup(page, features="html.parser")
@@ -24,11 +25,12 @@ class Crawler:
         # Get data from all pages in a parallel fashion
         # with Pool(processes=10) as pool:
         #     pool.map(self.para_getData, range(2, pages))
-        with codecs.open("../data/matchResults_regionsRaces.csv", "w", "utf-8") as file:
-            writer = csv.DictWriter(file, fieldnames=self.fieldNames)
-            writer.writeheader()
+        if fromPage == 1:
+            with codecs.open(self.fileName, "w", "utf-8") as file:
+                writer = csv.DictWriter(file, fieldnames=self.fieldNames)
+                writer.writeheader()
 
-        for page in range(1, pages + 1):
+        for page in range(fromPage, pages + 1):
             self.para_getData(page)
 
         self.matchList.sort(key=lambda x: x.id)
@@ -44,7 +46,62 @@ class Crawler:
         self.getData(soup)
         print(page, "done")
 
-    def getData(self, soup, numTries=0):
+    def liveGenerator(self, fromPage=580, lastGameId=None):
+
+        flag = False
+
+        start = self.url
+        page = requests.get(start).content
+        soup = BeautifulSoup(page, features="html.parser")
+        # self.getData(soup)
+        paginator = soup.select(".pagination > li > a")
+        pages = int(paginator[-2]['aria-label'].split()[-1])
+        assert(fromPage <= pages)
+        nextPaged = False
+        reachedLast = False
+        while not flag:
+            url = start + "&page={}"
+            soup = BeautifulSoup(requests.get(url.format(fromPage)).content, features="html.parser")
+
+            gameDicts = self.getData(soup, writeFile=False)
+
+            with codecs.open(self.fileName, "a", "utf-8") as file:
+
+                writer = csv.DictWriter(file, fieldnames=self.fieldNames)
+
+                tempLastId = lastGameId
+                for gameDict in gameDicts:
+                    # if nextPaged or lastGameId is None:
+                    #     writer.writerow(gameDict)
+                    #     yield gameDict
+                    #     tempLastId = gameDict['Id']
+                    if reachedLast or lastGameId is None:
+                        writer.writerow(gameDict)
+                        yield gameDict
+                        tempLastId = gameDict['Id']
+                    elif gameDict['Id'] == lastGameId:
+                        reachedLast = True
+
+                lastGameId = tempLastId
+
+            if len(gameDicts) >= 18:
+                paginator = soup.select(".pagination > li > a")
+                pages = int(paginator[-2]['aria-label'].split()[-1])
+                while fromPage >= pages:
+                    time.sleep(60*60)
+                    paginator = soup.select(".pagination > li > a")
+                    pages = int(paginator[-2]['aria-label'].split()[-1])
+                fromPage += 1
+                nextPaged = True
+                print("GG Page:", fromPage)
+            else:
+                nextPaged = False
+                reachedLast = False
+                time.sleep(60*60)
+
+
+
+    def getData(self, soup, numTries=0, writeFile=True):
         #TODO: Scrape race information too, includes having to soup href of each match
 
         cellMatches = soup.select("div.match.finished")
@@ -62,7 +119,7 @@ class Crawler:
                 time.sleep(30)
             else:
                 time.sleep(1)
-            return self.getData(soup, numTries + 1)
+            return self.getData(soup, numTries + 1, writeFile)
 
 
         for cell in cellMatches:
@@ -102,9 +159,14 @@ class Crawler:
                     time.sleep(1)
                 matchDataTries += 1
                 matchPage = BeautifulSoup(requests.get(matchPageURL).content, features="html.parser")
-
-            region1 = matchPage.select("div.game-data > div.team-1 > div.row > div.region")[0].text.strip().translate(str.maketrans('', '', string.punctuation))
-            region2 = matchPage.select("div.game-data > div.team-2 > div.row > div.region")[0].text.strip().translate(str.maketrans('', '', string.punctuation))
+            try:
+                region1 = matchPage.select("div.game-data > div.team-1 > div.row > div.region")[0].text.strip().translate(str.maketrans('', '', string.punctuation))
+            except IndexError:
+                region1 = ""
+            try:
+                region2 = matchPage.select("div.game-data > div.team-2 > div.row > div.region")[0].text.strip().translate(str.maketrans('', '', string.punctuation))
+            except IndexError:
+                region2 = ""
             try:
                 race1 = matchPage.select("div.game-data > div.team-1 > div.row > span.faction")[0].text.strip().translate(str.maketrans('', '', string.punctuation))
             except IndexError:
@@ -119,17 +181,26 @@ class Crawler:
             localMatchList.append(matchResult(date=date, id=id, player1=player1, player2=player2, result1=result1,
                                               result2=result2, region1=region1, race1=race1, region2=region2, race2=race2))
         print("matchlist length", len(self.matchList))
-        with codecs.open("../data/matchResults_regionsRaces.csv", "a", "utf-8") as file:
+        outDicts = []
+        if writeFile:
+            with codecs.open(self.fileName, "a", "utf-8") as file:
 
-            writer = csv.DictWriter(file, fieldnames=self.fieldNames)
+                writer = csv.DictWriter(file, fieldnames=self.fieldNames)
 
-            for result in localMatchList:
-                outDict = {'Date': result.date, 'Id': result.id, 'Player1': result.player1, 'Player1Region': result.region1,
-                           'Player1Race': result.race1, 'Player2': result.player2, 'Player2Region': result.region2,
-                           'Player2Race': result.race2, 'Score1': result.result1, 'Score2': result.result2}
+                for result in localMatchList:
+                    outDict = {'Date': result.date, 'Id': result.id, 'Player1': result.player1, 'Player1Region': result.region1,
+                               'Player1Race': result.race1, 'Player2': result.player2, 'Player2Region': result.region2,
+                               'Player2Race': result.race2, 'Score1': result.result1, 'Score2': result.result2}
 
-                writer.writerow(outDict)
+                    writer.writerow(outDict)
+                    outDict.append(outDict)
+        for result in localMatchList:
+            outDict = {'Date': result.date, 'Id': result.id, 'Player1': result.player1, 'Player1Region': result.region1,
+                       'Player1Race': result.race1, 'Player2': result.player2, 'Player2Region': result.region2,
+                       'Player2Race': result.race2, 'Score1': result.result1, 'Score2': result.result2}
+            outDicts.append(outDict)
 
+        return outDicts
         # print(cellMatches)
 
 
@@ -167,5 +238,7 @@ if __name__ == '__main__':
     # reverseFile("../data/matchResultsDates.csv", "../data/matchResultsDates_reversed.csv")
     url = "https://www.gosugamers.net/starcraft2/matches/results?sortBy=date-asc&maxResults=18"
     c = Crawler(url)
-    c.start()
-
+    # c.start()
+    liveGen = c.liveGenerator(fromPage=585, lastGameId="297304")
+    for i in liveGen:
+        print(i)

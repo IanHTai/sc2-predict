@@ -8,20 +8,30 @@ from models.linear import Linear
 from models.logistic import Logistic
 from models.glicko import Glicko
 from models.elo import Elo
+from models.svm import SVM
 from datetime import datetime
 import helper
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 import scipy.stats
+from queue import Queue
+from crawler.gosu_crawler import Crawler
+import threading
+from crawler.lootbet_crawler import LootCrawler, LootMatch
+import time
 
 class ModelRunner:
-    def __init__(self, model, fileName, trainRatio=0.8, testRatio=0.2):
+    def __init__(self, model, fileName, lastGameId, trainRatio=0.8, testRatio=0.2, startCash = 10000):
         self.model = model
         self.profiles = {}
         self.fileName = fileName
         self.inDict = {'profile1': [], 'profile2': [], 'matches': []}
         self.trainRatio = trainRatio
         self.testRatio = testRatio
+        self.profileUpdateQueue = Queue()
+        self.cash = startCash
+        self.startcash = startCash
+        self.lastGameId = lastGameId
 
     def runFile(self, fileName=None, test=False, validation=False):
         if fileName is None:
@@ -47,7 +57,6 @@ class ModelRunner:
 
 
     def runGame(self, game):
-        # TODO: Add race into profile dict as Stats_P or Maru_T
         # Output inputDict for updating model
         # Game is a dict from a row, from csvreader
         if not game['Player1'] in self.profiles:
@@ -107,11 +116,17 @@ class ModelRunner:
         print(inArr.shape)
         print(matchArr.shape)
 
-        self.train_X, test_x, self.train_Y, test_y = train_test_split(inArr, matchArr, test_size=1 - trainPercentage)
+        if trainPercentage == 1.0:
+            self.train_X = inArr
+            self.train_Y = matchArr
+            return
+
+        self.train_X, test_x, self.train_Y, test_y = train_test_split(inArr, matchArr, train_size=trainPercentage)
         print(self.train_X.shape, self.train_Y.shape, test_x.shape, test_y.shape)
         assert(len(test_x) == len(test_y))
 
-        self.test_X, self.val_X, self.test_Y, self.val_Y = train_test_split(test_x, test_y, test_size=(1 - trainPercentage - testPercentage)/(1 - trainPercentage))
+
+        self.test_X, self.val_X, self.test_Y, self.val_Y = train_test_split(test_x, test_y, train_size=(testPercentage)/(1 - trainPercentage))
         assert(len(self.test_X) == len(self.test_Y))
 
     def updateModel(self):
@@ -131,7 +146,8 @@ class ModelRunner:
             total += abs(real[i] - predictions[i])
         print(total, len(real), total/len(real))
 
-        self.stats(predictions, real)
+        stats = self.stats(predictions, real)
+        print("MSE", stats)
 
         return total/len(real)
 
@@ -170,20 +186,22 @@ class ModelRunner:
         confLow, confHigh = confidenceIntervals(bucketTotals, bucketResults)
 
 
-        plt.plot(linspace, linspace, 'r--', label='perfect predictions')
-        plt.plot(linspace, bucketResults, 'k.', label='actual predictions')
-        plt.plot(linspace, bucketResults, 'k')
-        plt.fill_between(linspace, confLow, confHigh, color='#539caf', alpha=0.4, label='95% CI')
-        idx = np.isfinite(linspace) & np.isfinite(bucketResults)
-        plt.plot(linspace, np.poly1d(np.polyfit(linspace[idx], bucketResults[idx], 1))(linspace), 'b--', label='fitted to predictions')
-        #plt.plot(np.unique(linspace), np.poly1d(np.polyfit(linspace, bucketResults, 1))(np.unique(linspace)), )
-        #plt.plot(linspace, np.polynomial.polynomial.Polynomial.fit(linspace, bucketResults, 1), 'b--', label='fitted predictions')
+        # plt.plot(linspace, linspace, 'r--', label='perfect predictions')
+        # plt.plot(linspace, bucketResults, 'k.', label='actual predictions')
+        # plt.plot(linspace, bucketResults, 'k')
+        # plt.fill_between(linspace, confLow, confHigh, color='#539caf', alpha=0.4, label='95% CI')
+        # idx = np.isfinite(linspace) & np.isfinite(bucketResults)
+        # plt.plot(linspace, np.poly1d(np.polyfit(linspace[idx], bucketResults[idx], 1))(linspace), 'b--', label='fitted to predictions')
+        # #plt.plot(np.unique(linspace), np.poly1d(np.polyfit(linspace, bucketResults, 1))(np.unique(linspace)), )
+        # #plt.plot(linspace, np.polynomial.polynomial.Polynomial.fit(linspace, bucketResults, 1), 'b--', label='fitted predictions')
+        #
+        # plt.xlabel("Predicted winrate")
+        # plt.ylabel("Actual winrate")
+        # plt.title("Actual vs Predicted Winrate")
+        # plt.legend()
+        # plt.show()
 
-        plt.xlabel("Predicted winrate")
-        plt.ylabel("Actual winrate")
-        plt.title("Actual vs Predicted Winrate")
-        plt.legend()
-        plt.show()
+        return np.sum(np.square(preds[:, 0] - real[:, 0]))/len(preds)
 
     def shuffleGames(self, score1, score2):
         out = []
@@ -193,20 +211,6 @@ class ModelRunner:
             out.append([0,1])
         shuffle(out)
         return out
-
-
-    def runLive(self):
-        # Grab live data from gosugamers and updates model.
-        while True:
-            try:
-                game = self.getLive()
-                matchesOut = self.runGame(game)
-                self.inDict['profile1'] = self.inDict['profile1'] + matchesOut['profile1']
-                self.inDict['profile2'] = self.inDict['profile2'] + matchesOut['profile2']
-                self.inDict['matches'] = self.inDict['matches'] + matchesOut['matches']
-                # TODO: Write new games to file as well
-            except:
-                continue
 
     def predict(self, player1, player2):
         if player1 in self.profiles and player2 in self.profiles:
@@ -236,25 +240,11 @@ class ModelRunner:
         np.testing.assert_almost_equal(totalOdds1 + totalOdds2, 1.0, decimal=4)
         return out, totalOdds1, totalOdds2
 
-    def calcAllSeries(self, singleOdds, bestOf):
-        out = {}
-        totalOdds1 = 0
-        totalOdds2 = 0
-
-        for i in range(0, bestOf//2 + 1):
-            key1 = "{}:{}".format(str(bestOf//2 + 1), str(i))
-            out[key1] = self.calcSeriesOdds(singleOdds, bestOf//2 + 1, i)
-            totalOdds1 += out[key1]
-
-            key2 = "{}:{}".format(str(i), str(bestOf//2 + 1))
-            out[key2] = self.calcSeriesOdds(singleOdds, i, bestOf//2 + 1)
-            totalOdds2 += out[key2]
-        np.testing.assert_almost_equal(totalOdds1 + totalOdds2, 1.0, decimal=4)
-        return out, totalOdds1, totalOdds2
 
     def calcSeriesOdds(self, singleOdds, score1, score2):
         # Calculate odds of specific score happening in a series, given odds of player1 winning one game
         totalGames = score1 + score2
+        singleOdds = singleOdds[0]
 
         if score1 > score2:
             return binom.pmf(k=score1-1, n=totalGames-1, p=singleOdds) * singleOdds
@@ -263,8 +253,92 @@ class ModelRunner:
 
 
     def getLive(self):
-        # Grab live data from gosugamers
-        pass
+        # Grab live data from gosugamers and put it into the update queue
+        url = "https://www.gosugamers.net/starcraft2/matches/results?sortBy=date-asc&maxResults=18"
+        c = Crawler(url, fileName="data/matchResults_regionsRaces.csv")
+        # c.start()
+        liveGen = c.liveGenerator(fromPage=584, lastGameId=self.lastGameId)
+        for i in liveGen:
+            self.profileUpdateQueue.put(i)
+
+    def runLive(self):
+        crawlerThread = threading.Thread(target=self.getLive)
+        crawlerThread.start()
+        flag = False
+        lc = LootCrawler(url="https://loot.bet/sport/esports/starcraft",
+                         gosuUrl="https://www.gosugamers.net/starcraft2/matches")
+        betOnMatches = {}
+        # TODO: Proper Lootbet -> Gosu name matching for people like Dark -> Dark.Sc2, sOs -> sOs.sc2
+        while not flag:
+            while not self.profileUpdateQueue.empty():
+                rawMatch = self.profileUpdateQueue.get()
+                if rawMatch['Id'] in betOnMatches:
+                    print("Result:", rawMatch['Date'], rawMatch['Player1'], rawMatch['Player2'])
+                    if int(rawMatch['Score1']) > int(rawMatch['Score2']):
+                        if betOnMatches[rawMatch['Id']][0] == 0:
+                            self.cash += betOnMatches[rawMatch['Id']][1]
+                            print("Win:", betOnMatches[rawMatch['Id']][1])
+                        else:
+                            print("Lose:", betOnMatches[rawMatch['Id']][1])
+                    elif int(rawMatch['Score1']) < int(rawMatch['Score2']):
+                        if betOnMatches[rawMatch['Id']][0] == 1:
+                            self.cash += betOnMatches[rawMatch['Id']][1]
+                            print("Win:", betOnMatches[rawMatch['Id']][1])
+                        else:
+                            print("Lose:", betOnMatches[rawMatch['Id']][1])
+                    else:
+                        print("TIE OR DRAW???", rawMatch['Id'], rawMatch['Player1'], rawMatch['Player2'])
+                        # Assume refund?
+                        self.cash += betOnMatches[rawMatch['Id']][2]
+                        print("Refund:", betOnMatches[rawMatch['Id']][2])
+                    print("New Balance:", self.cash, "ROI Since Start:", (self.cash - self.startcash)/float(self.startcash))
+
+                matchesOut = self.runGame(rawMatch)
+                self.inDict['profile1'] = self.inDict['profile1'] + matchesOut['profile1']
+                self.inDict['profile2'] = self.inDict['profile2'] + matchesOut['profile2']
+                self.inDict['matches'] = self.inDict['matches'] + matchesOut['matches']
+
+
+            matches = lc.getMatches()
+            if len(matches) > 0:
+                for match in matches:
+                    if not match.id in betOnMatches:
+
+                        _, p1win, p2win = self.predictSeries(match.player1, match.player2, match.bestOf)
+
+                        if p1win*match.odds1 > 1. or p2win*match.odds2 > 1.:
+                            if p1win*match.odds1 > 1. and p2win*match.odds2 > 1.:
+                                print("Both sides of the bet are >1? Something must have gone wrong with the bookie? Or with our model?")
+                                print("P1", p1win, "Odds1", match.odds1, "P2", p2win, "Odds2", match.odds2)
+                            EV = [p1win*match.odds1, p2win*match.odds2]
+                            betterBet = np.argmax(EV)
+                            if betterBet == 0:
+                                dec = self.betDecision(prob=p1win, odds=match.odds1)
+                                decOdds = dec*match.odds1
+                                print("Bet:", match.player1, "vs", match.player2, "Amount:", dec, "Edge+1:",
+                                      p1win * match.odds1, "Prob", p1win)
+                            else:
+                                dec = self.betDecision(prob=p2win, odds=match.odds2)
+                                decOdds = dec * match.odds2
+                                print("Bet:", match.player2, "vs", match.player1, "Amount:", dec, "Edge+1:",
+                                      p2win * match.odds2, "Prob", p2win)
+                            if dec > 0:
+                                betOnMatches[match.id] = [betterBet, decOdds, dec]
+                                self.cash -= dec
+
+
+            time.sleep(60 * 60)
+
+
+    def betDecision(self, odds, prob):
+        # Decide on how much to bet using Kelly Criterion
+
+        wagerFraction = (prob*odds - 1)/(odds - 1)
+        amount = wagerFraction * self.cash
+        if amount <= 5:
+            return 0
+        else:
+            return amount
 
 class PlayerNotFoundException(Exception):
     pass
@@ -276,16 +350,22 @@ if __name__ == "__main__":
     #model = Glicko()
     #model = Elo()
     model = Logistic()
+    #model = SVM(C=10)
     print('Model Created')
-    runner = ModelRunner(model, "data/matchResults_regionsRaces.csv", trainRatio=0.8, testRatio=0.2)
+    runner = ModelRunner(model, "data/matchResults_regionsRaces.csv", trainRatio=0.8, testRatio=0.2, lastGameId="297304")
     print('Model Runner Created')
     runner.runFile(test=True)
     print('File Run')
-    runner.createTTV(0.7, 0.2)
+    runner.createTTV(0.6, 0.2)
+
     print('TTV Separated')
     runner.updateModel()
     print('Model Updated')
     runner.testModel()
+
+    maruAliveResults = runner.predict("Maru", "aLive")
+    print("Maru", maruAliveResults[0], "aLive", maruAliveResults[1])
+    print(runner.predictSeries("Maru","aLive",1))
 
     # for key in runner.profiles.keys():
     #     runner.profiles[key].checkDecay(datetime.now().date())
@@ -296,7 +376,19 @@ if __name__ == "__main__":
         print(rank, runner.profiles[name].name, runner.profiles[name].total, runner.profiles[name].glickoRating, timeSinceFirst, runner.profiles[name].total / timeSinceFirst, runner.profiles[name].elo,
               runner.profiles[name].eloZ, runner.profiles[name].eloT, runner.profiles[name].eloP, "PEAK ELO", runner.profiles[name].peakElo)
         rank += 1
+        if rank >= 20:
+            break
 
     print("Serral's Match History", "EXPOVERALL:", runner.profiles['Serral'].expOverall, "WINPERCENTAGE:", runner.profiles['Serral'].wins / runner.profiles['Serral'].total)
     print("Maru's Match History", "EXPOVERALL:", runner.profiles['Maru'].expOverall, "WINPERCENTAGE:",
           runner.profiles['Maru'].wins / runner.profiles['Maru'].total)
+
+    # USE FOR REAL NOW
+    runner.createTTV(1.0,0.0)
+    runner.updateModel()
+    print("Used all matches for training, ready for deployment")
+    maruAliveResults = runner.predict("Maru", "aLive")
+    print("Maru", maruAliveResults[0], "aLive", maruAliveResults[1])
+    print(runner.predictSeries("Maru", "aLive", 1))
+
+    runner.runLive()

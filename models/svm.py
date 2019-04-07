@@ -1,12 +1,12 @@
-from sklearn.linear_model import LogisticRegression
 from models.model import Model
 import numpy as np
 from sklearn.preprocessing import StandardScaler
-
-class Logistic(Model):
-    def __init__(self):
-        self.model = LogisticRegression(solver='newton-cg', multi_class='multinomial', max_iter=1000, C=1e5)
+from sklearn.svm import SVC
+class SVM(Model):
+    def __init__(self, C=1.0, gamma='auto', useRaceRatio=True):
+        self.model = SVC(C=C, gamma=gamma, probability=True)
         self.scaler = StandardScaler()
+        self.useRaceRatio = useRaceRatio
     def update(self, profiles, matches):
         """
         Update model with one match
@@ -17,29 +17,29 @@ class Logistic(Model):
         Xs = []
         Ys = []
         for i in range(0, len(matches)):
-            features1 = profiles[i][0].getFeatures(profiles[i][1])
-            features2 = profiles[i][1].getFeatures(profiles[i][0])
+            features1 = profiles[i][0].getFeatures(profiles[i][1], useRaceRatio=self.useRaceRatio)
+            features2 = profiles[i][1].getFeatures(profiles[i][0], useRaceRatio=self.useRaceRatio)
 
             # Update with profiles in both slots to prevent strange asymmetrical model
             Xs.append(features1 + features2)
-            Ys.append(matches[i][1])
+            Ys.append(str(matches[i][1]))
 
             Xs.append(features2 + features1)
-            Ys.append(matches[i][0])
+            Ys.append(str(matches[i][0]))
 
         self.model.fit(self.scaler.fit_transform(Xs), Ys)
 
     def predict(self, profile1, profile2):
-        features1 = profile1.getFeatures(profile2)
-        features2 = profile2.getFeatures(profile1)
+        features1 = profile1.getFeatures(profile2, useRaceRatio=self.useRaceRatio)
+        features2 = profile2.getFeatures(profile1, useRaceRatio=self.useRaceRatio)
         features = np.array(features1 + features2).reshape(1, -1)
         return self.model.predict_proba(self.scaler.transform(features))[0]
 
     def predictBatch(self, profiles):
         Xs = []
         for i in range(0, len(profiles)):
-            features1 = profiles[i][0].getFeatures(profiles[i][1])
-            features2 = profiles[i][1].getFeatures(profiles[i][0])
+            features1 = profiles[i][0].getFeatures(profiles[i][1], useRaceRatio=self.useRaceRatio)
+            features2 = profiles[i][1].getFeatures(profiles[i][0], useRaceRatio=self.useRaceRatio)
 
             # Update with profiles in both slots to prevent strange asymmetrical model
             Xs.append(features1 + features2)
@@ -49,8 +49,8 @@ class Logistic(Model):
         Xs = []
         Ys = []
         for i in range(0, len(matches)):
-            features1 = profiles1[i].getFeatures(profiles2[i])
-            features2 = profiles2[i].getFeatures(profiles1[i])
+            features1 = profiles1[i].getFeatures(profiles2[i], useRaceRatio=self.useRaceRatio)
+            features2 = profiles2[i].getFeatures(profiles1[i], useRaceRatio=self.useRaceRatio)
 
             Xs.append(features1 + features2)
             Ys.append(matches[i][0])

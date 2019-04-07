@@ -272,7 +272,7 @@ class PlayerProfile:
         self.glickoRating = rPrime
         self.glickoRD = RDPrime
 
-    def getFeatures(self, opponentProfile):
+    def getFeatures(self, opponentProfile, useRaceRatio=False):
         mu = (self.glickoRating - 1500) / 173.7178
         phi = self.glickoRD / 173.7178
         if self.expAverageLastPlayed == 0:
@@ -284,7 +284,7 @@ class PlayerProfile:
         raceQ_A = 10 ** (self.elo / 400)
         raceQ_B = 10 ** (opponentProfile.elo / 400)
         raceEXP = self.expOverall
-        raceEloRatio = 1/3
+        raceEloRatio = 1./3.
         if opponentProfile.race == "Zerg":
             normRace = self.expZ - self.expOverall
             raceElo = self.eloZ
@@ -322,8 +322,12 @@ class PlayerProfile:
         Q_B = 10 ** (opponentProfile.elo / 400)
         E_A = Q_A / (Q_A + Q_B)
 
-        # raceEloRatio not used, seems to be noisy
-        return [mu, phi, timeWeightedRating, normRace, glickoE, self.elo, E_A, raceElo, raceE_A, self.expOverall, raceEXP]
+        outArr = [mu, phi, timeWeightedRating, normRace, glickoE, self.elo, E_A, raceElo, raceE_A, self.expOverall, raceEXP]
+        if useRaceRatio:
+            outArr.append(raceEloRatio)
+            # raceEloRatio seems to be noisy
+
+        return outArr
 
     """
     Helper functions for Glicko calculations

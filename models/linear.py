@@ -33,7 +33,7 @@ class Linear(Model):
     def predict(self, profile1, profile2):
         features1 = profile1.getFeatures(profile2)
         features2 = profile2.getFeatures(profile1)
-        return self.model.predict(self.scaler.transform([features1 + features2]))
+        return self.model.predict(self.scaler.transform([features1 + features2]))[0]
 
     def predictBatch(self, profiles):
         Xs = []
@@ -60,4 +60,4 @@ class Linear(Model):
 
             Xs.append(features2 + features1)
             Ys.append([matches[i][1], matches[i][0]])
-        print("model score", self.model.score(Xs, Ys))
+        print("model score", self.model.score(self.scaler.transform(Xs), Ys))
