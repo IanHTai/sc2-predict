@@ -100,3 +100,26 @@ def fillRegionDict():
     #     REGION_DICT[country] = 'KR'
     for country in ASIA + KR:
         REGION_DICT[country] = 'ASIA'
+
+class gosuCleaner:
+    def __init__(self):
+        self.cleanedDict = {}
+        self.clash = {}
+    def cleanRow(self, row):
+        row['Player1'] = self.cleanName(row['Player1'])
+        row['Player2'] = self.cleanName(row['Player2'])
+        return row
+    def cleanName(self, name):
+        if not name in self.clash:
+            self.clash[name] = False
+        if name in self.cleanedDict:
+            return self.cleanedDict[name]
+        if '.' in name and not name in self.cleanedDict:
+            cleanedName = name.split('.')[0]
+            if cleanedName in self.clash:
+                self.clash[cleanedName] = True
+            if not cleanedName in self.clash:
+                self.clash[cleanedName] = False
+            self.cleanedDict[name] = cleanedName
+            return cleanedName
+        return name

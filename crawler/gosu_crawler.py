@@ -6,20 +6,21 @@ import codecs
 import csv
 import string
 import random
+import helper
 
 class Crawler:
-    def __init__(self, url, fileName="../data/matchResults_regionsRaces.csv"):
+    def __init__(self, url, fileName="../data/matchResults_regionsRaces.csv", cleaner=helper.gosuCleaner()):
         self.url = url
         self.matchList = []
         self.fieldNames = ['Date', 'Id', 'Player1', 'Player1Region', 'Player1Race', 'Player2', 'Player2Region',
                       'Player2Race', 'Score1', 'Score2']
         self.fileName = fileName
+        self.cleaner = cleaner
 
     def start(self, fromPage=1):
         start = self.url
         page = requests.get(start).content
         soup = BeautifulSoup(page, features="html.parser")
-        #self.getData(soup)
         paginator = soup.select(".pagination > li > a")
         pages = int(paginator[-2]['aria-label'].split()[-1])
 
@@ -43,8 +44,7 @@ class Crawler:
 
     def para_getData(self, page):
         url = self.url + "&page={}"
-        soup = BeautifulSoup(requests.get(url.format(page)).content, features="html.parser")
-        self.getData(soup)
+        _ = self.getData(url.format(page))
         print(page, "done")
 
     def liveGenerator(self, fromPage=580, lastGameId=None):
@@ -54,7 +54,6 @@ class Crawler:
         start = self.url
         page = requests.get(start).content
         soup = BeautifulSoup(page, features="html.parser")
-        # self.getData(soup)
         paginator = soup.select(".pagination > li > a")
         pages = int(paginator[-2]['aria-label'].split()[-1])
         assert(fromPage <= pages)
@@ -63,9 +62,8 @@ class Crawler:
         print("GG Page:", fromPage)
         while not flag:
             url = start + "&page={}"
-            soup = BeautifulSoup(requests.get(url.format(fromPage)).content, features="html.parser")
 
-            gameDicts = self.getData(soup, writeFile=False)
+            gameDicts = self.getData(url.format(fromPage), writeFile=False)
 
             with codecs.open(self.fileName, "a", "utf-8") as file:
 
@@ -104,15 +102,14 @@ class Crawler:
 
 
 
-    def getData(self, soup, numTries=0, writeFile=True):
-        #TODO: Scrape race information too, includes having to soup href of each match
-
+    def getData(self, url, numTries=0, writeFile=True):
+        soup = BeautifulSoup(requests.get(url).content, features="html.parser")
         cellMatches = soup.select("div.match.finished")
 
         localMatchList = []
 
-        if len(cellMatches) == 0:
-            randomizer = random.uniform(0.5, 1.2)
+        while len(cellMatches) == 0:
+            randomizer = random.uniform(0.5, 1.5)
             if numTries > 13:
                 time.sleep(10800*randomizer)
             elif numTries > 10:
@@ -122,9 +119,10 @@ class Crawler:
             elif numTries > 5:
                 time.sleep(30*randomizer)
             else:
-                time.sleep(5*randomizer)
-            return self.getData(soup, numTries + 1, writeFile)
-
+                time.sleep(10*randomizer)
+            numTries += 1
+            soup = BeautifulSoup(requests.get(url).content, features="html.parser")
+            cellMatches = soup.select("div.match.finished")
 
         for cell in cellMatches:
             id = cell["id"].lstrip("panel")
@@ -133,8 +131,8 @@ class Crawler:
 
             assert(len(player1_cells) == 1 and len(player2_cells) == 1)
 
-            player1 = player1_cells[0].get_text().strip()
-            player2 = player2_cells[0].get_text().strip()
+            player1 = self.cleaner.cleanName(player1_cells[0].get_text().strip())
+            player2 = self.cleaner.cleanName(player2_cells[0].get_text().strip())
 
             results = cell.select("div.match-score > span")
 
@@ -150,19 +148,21 @@ class Crawler:
             matchPage = BeautifulSoup(requests.get(matchPageURL).content, features="html.parser")
 
             matchDataTries = 0
-            if len(matchPage.select("div.game-data")) == 0:
+            while len(matchPage.select("div.game-data")) == 0:
+                randomizer = random.uniform(0.5, 1.2)
                 if matchDataTries > 13:
-                    time.sleep(10800)
+                    time.sleep(10800*randomizer)
                 elif matchDataTries > 10:
-                    time.sleep(3600)
+                    time.sleep(3600*randomizer)
                 elif matchDataTries > 8:
-                    time.sleep(300)
+                    time.sleep(300*randomizer)
                 elif matchDataTries > 5:
-                    time.sleep(30)
+                    time.sleep(30*randomizer)
                 else:
-                    time.sleep(1)
+                    time.sleep(10*randomizer)
                 matchDataTries += 1
                 matchPage = BeautifulSoup(requests.get(matchPageURL).content, features="html.parser")
+
             try:
                 region1 = matchPage.select("div.game-data > div.team-1 > div.row > div.region")[0].text.strip().translate(str.maketrans('', '', string.punctuation))
             except IndexError:
@@ -197,7 +197,7 @@ class Crawler:
                                'Player2Race': result.race2, 'Score1': result.result1, 'Score2': result.result2}
 
                     writer.writerow(outDict)
-                    outDict.append(outDict)
+                    outDicts.append(outDict)
         for result in localMatchList:
             outDict = {'Date': result.date, 'Id': result.id, 'Player1': result.player1, 'Player1Region': result.region1,
                        'Player1Race': result.race1, 'Player2': result.player2, 'Player2Region': result.region2,
@@ -241,8 +241,12 @@ def reverseFile(inFile, outFile):
 if __name__ == '__main__':
     # reverseFile("../data/matchResultsDates.csv", "../data/matchResultsDates_reversed.csv")
     url = "https://www.gosugamers.net/starcraft2/matches/results?sortBy=date-asc&maxResults=18"
-    c = Crawler(url)
+    newFileName = "../data/matchResults_properTimeout.csv"
+    c = Crawler(url, newFileName)
+    c.start()
+
+    #c = Crawler(url)
     # c.start()
-    liveGen = c.liveGenerator(fromPage=585, lastGameId="297304")
-    for i in liveGen:
-        print(i)
+    #liveGen = c.liveGenerator(fromPage=585, lastGameId="297304")
+    #for i in liveGen:
+    #    print(i)

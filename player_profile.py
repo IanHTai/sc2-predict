@@ -4,10 +4,19 @@ import helper
 from statistics import mean
 
 class PlayerProfile:
-    def __init__(self, name, race, firstDate, region=None):
+    def __init__(self, name, race, firstDate=None, region=None):
         self.name = name
         self.dateFormat = '%A %B %d %Y'
-        self.lastPlayedDate = datetime.strptime(firstDate, self.dateFormat).date()
+        if not firstDate is None:
+            self.lastPlayedDate = datetime.strptime(firstDate, self.dateFormat).date()
+            # For glicko2 rating periods
+            self.firstPlayedDate = datetime.strptime(firstDate, self.dateFormat).date()
+            self.lastStartPeriod = datetime.strptime(firstDate, self.dateFormat).date()
+        else:
+            self.lastPlayedDate = None
+            self.firstPlayedDate = None
+            self.lastStartPeriod = None
+
         self.wins = 0
         self.winsZ = 0
         self.winsT = 0
@@ -29,10 +38,9 @@ class PlayerProfile:
             self.region = helper.REGION_DICT[region]
         else:
             self.region = "OTHER"
+        self.country = region
 
         # For glicko2 rating periods
-        self.firstPlayedDate = datetime.strptime(firstDate, self.dateFormat).date()
-        self.lastStartPeriod = datetime.strptime(firstDate, self.dateFormat).date()
         self.periodDays = 40
 
         self.expAverageLastPlayed = 0
@@ -50,22 +58,33 @@ class PlayerProfile:
         self.eloT = 1200
         self.eloP = 1200
 
-        self.eloK = 32
+        self.eloK = 30
         self.peakElo = 1200
         self.peakEloZ = 1200
         self.peakEloT = 1200
         self.peakEloP = 1200
 
+        self.head2headExpDict = {}
+        self.head2headExpAlpha = 0.2
+
     def updateRace(self, race):
         self.race = race
 
     def updateProfile(self, date, opponentProfile, win):
+        date = datetime.strptime(date, self.dateFormat).date()
+
+        if self.lastPlayedDate is None:
+            self.lastPlayedDate = date
+        if self.firstPlayedDate is None:
+            self.firstPlayedDate = date
+        if self.lastStartPeriod is None:
+            self.lastStartPeriod = date
+
         assert(type(win) == bool)
         self.total += 1
         winNum = 1 if win else 0
         self.wins += winNum
 
-        date = datetime.strptime(date, self.dateFormat).date()
         playTimeGap = (date - self.lastPlayedDate).days // 30
         # NOTE: playTimeGap is in months
         self.lastPlayedDate = date
@@ -194,13 +213,28 @@ class PlayerProfile:
 
         self.expAverageLastPlayed = self.expAlpha * playTimeGap + self.expAverageLastPlayed * (1 - self.expAlpha)
 
+
+        # Update head2head
+        encodedName = self.head2headEncode(opponentProfile)
+        if not encodedName in self.head2headExpDict:
+            self.head2headExpDict[encodedName] = 0.5
+        self.head2headExpDict[encodedName] = self.head2headExpAlpha * winNum + (1 - self.head2headExpAlpha) * self.head2headExpDict[encodedName]
+
+    def head2headEncode(self, profile):
+        return "".join([profile.name, profile.race, profile.country])
+
+
     def checkDecay(self, date):
+        if self.lastStartPeriod is None:
+            return
+
         # Decays both glicko and elo
         numPeriods = (date - (self.lastStartPeriod + timedelta(days=self.periodDays))).days // self.periodDays
         if numPeriods > 0:
             self.lastStartPeriod += timedelta(days=self.periodDays * numPeriods)
             self.decay(numPeriods)
             self.decayElo(numPeriods)
+            self.decayHead2Head(numPeriods)
 
     def decay(self, periods):
         for i in range(periods):
@@ -213,6 +247,11 @@ class PlayerProfile:
         self.eloZ = (1-self.eloDecay)**periods * (self.eloZ - 1200) + 1200
         self.eloT = (1 - self.eloDecay) ** periods * (self.eloT - 1200) + 1200
         self.eloP = (1 - self.eloDecay) ** periods * (self.eloP - 1200) + 1200
+
+    def decayHead2Head(self, periods):
+        for encodedName in self.head2headExpDict:
+            for i in range(0, periods):
+                self.head2headExpDict[encodedName] = self.head2headExpAlpha * 0.5 + (1 - self.head2headExpAlpha) * self.head2headExpDict[encodedName]
 
     def updateGlicko(self, opponentRating, opponentRD, win):
         assert (type(win) == bool)
@@ -322,7 +361,12 @@ class PlayerProfile:
         Q_B = 10 ** (opponentProfile.elo / 400)
         E_A = Q_A / (Q_A + Q_B)
 
-        outArr = [mu, phi, timeWeightedRating, normRace, glickoE, self.elo, E_A, raceElo, raceE_A, self.expOverall, raceEXP]
+        h2hExp = 0.5
+        encodedName = self.head2headEncode(opponentProfile)
+        if encodedName in self.head2headExpDict:
+            h2hExp = self.head2headExpDict[encodedName]
+
+        outArr = [mu, phi, timeWeightedRating, normRace, glickoE, self.elo, E_A, raceElo, raceE_A, self.expOverall, raceEXP, h2hExp]
         if useRaceRatio:
             outArr.append(raceEloRatio)
             # raceEloRatio seems to be noisy
