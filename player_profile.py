@@ -1,10 +1,10 @@
 import math
 from datetime import datetime, timedelta
 import helper
-from statistics import mean
+import numpy as np
 
 class PlayerProfile:
-    def __init__(self, name, race, firstDate=None, region=None):
+    def __init__(self, name, race, firstDate=None, region=""):
         self.name = name
         self.dateFormat = '%A %B %d %Y'
         if not firstDate is None:
@@ -67,11 +67,14 @@ class PlayerProfile:
         self.head2headExpDict = {}
         self.head2headExpAlpha = 0.2
 
+    def __str__(self):
+        return "{}, {}, {} -- Elo: {}".format(self.name, self.race, self.country, self.elo)
+
     def updateRace(self, race):
         self.race = race
 
     def updateProfile(self, date, opponentProfile, win):
-        date = datetime.strptime(date, self.dateFormat).date()
+        #date = datetime.strptime(date, self.dateFormat).date()
 
         if self.lastPlayedDate is None:
             self.lastPlayedDate = date
@@ -80,9 +83,8 @@ class PlayerProfile:
         if self.lastStartPeriod is None:
             self.lastStartPeriod = date
 
-        assert(type(win) == bool)
         self.total += 1
-        winNum = 1 if win else 0
+        winNum = win
         self.wins += winNum
 
         playTimeGap = (date - self.lastPlayedDate).days // 30
@@ -90,7 +92,7 @@ class PlayerProfile:
         self.lastPlayedDate = date
 
         if opponentProfile.race == "Zerg":
-            self.winsZ += 1 if win else 0
+            self.winsZ += win
             self.totalZ += 1
             self.expZ = self.matchAlpha * winNum + self.expZ * (1 - self.matchAlpha)
             if self.totalZ < 10:
@@ -103,7 +105,7 @@ class PlayerProfile:
                 self.eloK *= 2
 
             Q_A = 10 ** (self.eloZ / 400)
-            Q_B = 10 ** (mean([opponentProfile.eloZ, opponentProfile.eloT, opponentProfile.eloP]) / 400)
+            Q_B = 10 ** ((opponentProfile.eloZ + opponentProfile.eloT + opponentProfile.eloP) / 3. / 400)
             if self.race == "Zerg":
                 Q_B = 10 ** (opponentProfile.eloZ / 400)
             elif self.race == "Terran":
@@ -117,7 +119,7 @@ class PlayerProfile:
             self.peakEloZ = max(self.eloZ, self.peakEloZ)
 
         elif opponentProfile.race == "Terran":
-            self.winsT += 1 if win else 0
+            self.winsT += win
             self.totalT += 1
             self.expT = self.matchAlpha * winNum + self.expT * (1 - self.matchAlpha)
             if self.totalT < 10:
@@ -130,7 +132,7 @@ class PlayerProfile:
                 self.eloK *= 2
 
             Q_A = 10 ** (self.eloT / 400)
-            Q_B = 10 ** (mean([opponentProfile.eloZ, opponentProfile.eloT, opponentProfile.eloP]) / 400)
+            Q_B = 10 ** ((opponentProfile.eloZ + opponentProfile.eloT + opponentProfile.eloP) / 3. / 400)
             if self.race == "Zerg":
                 Q_B = 10 ** (opponentProfile.eloZ / 400)
             elif self.race == "Terran":
@@ -144,7 +146,7 @@ class PlayerProfile:
             self.peakEloT = max(self.eloT, self.peakEloT)
 
         elif opponentProfile.race == "Protoss":
-            self.winsP += 1 if win else 0
+            self.winsP += win
             self.totalP += 1
             self.expP = self.matchAlpha * winNum + self.expP * (1 - self.matchAlpha)
             if self.totalP < 10:
@@ -157,7 +159,7 @@ class PlayerProfile:
                 self.eloK *= 2
 
             Q_A = 10 ** (self.eloZ / 400)
-            Q_B = 10 ** (mean([opponentProfile.eloZ, opponentProfile.eloT, opponentProfile.eloP]) / 400)
+            Q_B = 10 ** ((opponentProfile.eloZ + opponentProfile.eloT + opponentProfile.eloP) / 3. / 400)
             if self.race == "Zerg":
                 Q_B = 10 ** (opponentProfile.eloZ / 400)
             elif self.race == "Terran":
@@ -221,7 +223,9 @@ class PlayerProfile:
         self.head2headExpDict[encodedName] = self.head2headExpAlpha * winNum + (1 - self.head2headExpAlpha) * self.head2headExpDict[encodedName]
 
     def head2headEncode(self, profile):
-        return "".join([profile.name, profile.race, profile.country])
+        if isinstance(profile.name, float) or isinstance(profile.race, float) or isinstance(profile.country, float):
+            print(profile.name, profile.race, profile.country)
+        return "".join((profile.name, profile.race, profile.country))
 
 
     def checkDecay(self, date):
@@ -254,8 +258,7 @@ class PlayerProfile:
                 self.head2headExpDict[encodedName] = self.head2headExpAlpha * 0.5 + (1 - self.head2headExpAlpha) * self.head2headExpDict[encodedName]
 
     def updateGlicko(self, opponentRating, opponentRD, win):
-        assert (type(win) == bool)
-        winNum  = 1 if win else 0
+        winNum  = win
         mu = (self.glickoRating - 1500) / 173.7178
         phi = self.glickoRD / 173.7178
         muOpponent = (opponentRating - 1500) / 173.7178
@@ -292,7 +295,7 @@ class PlayerProfile:
             expected = self.glickoExpected(mu, muOpponent, phiOpponent)
             oneOverV += (self.glickoG(phiOpponent) ** 2) * expected * (1 - expected)
 
-            winNum = 1 if win else 0
+            winNum = win
             preMultiDelta += self.glickoG(phiOpponent) * (winNum - expected)
         v = oneOverV ** -1
         delta = preMultiDelta * v
@@ -311,10 +314,10 @@ class PlayerProfile:
         self.glickoRating = rPrime
         self.glickoRD = RDPrime
 
-    def getFeatures(self, opponentProfile, useRaceRatio=False):
+    def getFeatures(self, opponentProfile, useRaceRatio=False, useRD=True):
         mu = (self.glickoRating - 1500) / 173.7178
         phi = self.glickoRD / 173.7178
-        if self.expAverageLastPlayed == 0:
+        if self.expAverageLastPlayed <= 1:
             timeWeightedRating = self.glickoRating
         else:
             timeWeightedRating = self.glickoRating / self.expAverageLastPlayed
@@ -366,10 +369,15 @@ class PlayerProfile:
         if encodedName in self.head2headExpDict:
             h2hExp = self.head2headExpDict[encodedName]
 
-        outArr = [mu, phi, timeWeightedRating, normRace, glickoE, self.elo, E_A, raceElo, raceE_A, self.expOverall, raceEXP, h2hExp]
+        # outArr = [mu, phi, timeWeightedRating, normRace, glickoE, self.elo, E_A, raceElo, raceE_A, self.expOverall, raceEXP, h2hExp]
+        # Raw Elo seems to have a very negative coeff (-0.5+), so I'm removing it as a feature
+        outArr = [mu, timeWeightedRating, normRace, glickoE, E_A, raceElo, raceE_A, self.expOverall,
+                  raceEXP, h2hExp]
         if useRaceRatio:
             outArr.append(raceEloRatio)
             # raceEloRatio seems to be noisy
+        if useRD:
+            outArr.append(phi)
 
         return outArr
 

@@ -2,6 +2,9 @@ from models.model import Model
 import numpy as np
 
 class Elo(Model):
+    """
+    DEPRECATED NO LONGER WORKS
+    """
     def update(self, profiles, matches):
         """
         Update model with one match

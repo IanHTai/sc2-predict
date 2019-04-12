@@ -33,6 +33,7 @@ EUW = [
     "Bulgaria",
     "Croatia",
     "Cyprus",
+    "Czechia",
     "Czech Republic",
     "Denmark",
     "Egypt",
@@ -61,6 +62,7 @@ EUW = [
     "Qatar",
     "Moldova",
     "Romania",
+    "Russian Federation",
     "Russia",
     "Serbia",
     "Slovakia",
@@ -77,7 +79,7 @@ EUW = [
 
 KR = ["Korea Republic of"]
 ASIA = ["Australia", "New Zealand", "Indonesia", "Malaysia", "Singapore", "Thailand", "Philippines", "Vietnam",
-        "Taiwan", "Hong Kong", "Macau", "Japan", "China"]
+        "Taiwan Province of China", "Hong Kong", "Macau", "Japan", "China"]
 
 
 REGIONS = {
@@ -110,6 +112,7 @@ class gosuCleaner:
         row['Player2'] = self.cleanName(row['Player2'])
         return row
     def cleanName(self, name):
+        name = name.lower()
         if not name in self.clash:
             self.clash[name] = False
         if name in self.cleanedDict:

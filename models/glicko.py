@@ -2,6 +2,9 @@ from models.model import Model
 import numpy as np
 
 class Glicko(Model):
+    """
+    DEPRECATED NO LONGER WORKS
+    """
     def __init__(self):
         pass
 

@@ -46,7 +46,6 @@ class Linear(Model):
 
         return self.model.predict(self.scaler.transform(Xs))
 
-
     def test(self, profiles1, profiles2, matches):
         Xs = []
         Ys = []
@@ -61,3 +60,18 @@ class Linear(Model):
             Xs.append(features2 + features1)
             Ys.append([matches[i][1], matches[i][0]])
         print("model score", self.model.score(self.scaler.transform(Xs), Ys))
+
+    def updateRaw(self, features, matches, valFeatures, valMatches):
+        self.model.fit(self.scaler.fit_transform(features), matches)
+
+    def predictRaw(self, features):
+        features = np.array(features).reshape(1, -1)
+        return self.model.predict_proba(self.scaler.transform(features))[0]
+
+    def predictBatchRaw(self, features):
+        return self.model.predict_proba(self.scaler.transform(features))
+
+    def getFeatures(self, profile1, profile2):
+        features1 = profile1.getFeatures(profile2)
+        features2 = profile2.getFeatures(profile1)
+        return features1 + features2

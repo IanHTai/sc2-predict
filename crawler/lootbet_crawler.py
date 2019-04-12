@@ -51,13 +51,13 @@ class LootCrawler:
 
         for match in matches:
             moneyLine = match.select("div.itemNew")[0]
-            time_ = moneyLine.select("span.Date > span.time")[0].text.strip()
-            date = moneyLine.select("span.Date > span.date")[0].text.strip()
+            time_ = match.select("span.Date > span.time")[0].text.strip()
+            date = match.select("span.Date > span.date")[0].text.strip()
             dateAndTime = time_ + " " + date + " " + timezone
             #dt = datetime.datetime.strptime(dateAndTime, "%H:%M %d %b %Z")
             dt = dateutil.parser.parse(dateAndTime)
-            player1 = moneyLine.select("app-odd.teamLeft > span.name")[0].text.strip()
-            player2 = moneyLine.select("app-odd.teamRight > span.name")[0].text.strip()
+            player1 = self.cleaner.cleanName(moneyLine.select("app-odd.teamLeft > span.name")[0].text.strip())
+            player2 = self.cleaner.cleanName(moneyLine.select("app-odd.teamRight > span.name")[0].text.strip())
 
             #print(player1, player2)
 
@@ -125,55 +125,40 @@ class LootCrawler:
                         matchPage = BeautifulSoup(requests.get(matchPageURL).content, features="html.parser")
                     intArr = [int(s) for s in matchPage.select("div.best-of")[0].text.split() if s.isdigit()]
 
-                    if gosu_p1 == players[0]:
-                        try:
-                            region1 = matchPage.select("div.game-data > div.team-1 > div.row > div.region")[
-                                0].text.strip().translate(str.maketrans('', '', string.punctuation))
-                        except IndexError:
-                            region1 = ""
-                        try:
-                            region2 = matchPage.select("div.game-data > div.team-2 > div.row > div.region")[
-                                0].text.strip().translate(str.maketrans('', '', string.punctuation))
-                        except IndexError:
-                            region2 = ""
-                        try:
-                            race1 = matchPage.select("div.game-data > div.team-1 > div.row > span.faction")[
-                                0].text.strip().translate(str.maketrans('', '', string.punctuation))
-                        except IndexError:
-                            race1 = ""
-                        try:
-                            race2 = matchPage.select("div.game-data > div.team-2 > div.row > span.faction")[
-                                0].text.strip().translate(str.maketrans('', '', string.punctuation))
-                        except IndexError:
-                            race2 = ""
-                    else:
-                        try:
-                            region2 = matchPage.select("div.game-data > div.team-1 > div.row > div.region")[
-                                0].text.strip().translate(str.maketrans('', '', string.punctuation))
-                        except IndexError:
-                            region2 = ""
-                        try:
-                            region1 = matchPage.select("div.game-data > div.team-2 > div.row > div.region")[
-                                0].text.strip().translate(str.maketrans('', '', string.punctuation))
-                        except IndexError:
-                            region1 = ""
-                        try:
-                            race2 = matchPage.select("div.game-data > div.team-1 > div.row > span.faction")[
-                                0].text.strip().translate(str.maketrans('', '', string.punctuation))
-                        except IndexError:
-                            race2 = ""
-                        try:
-                            race1 = matchPage.select("div.game-data > div.team-2 > div.row > span.faction")[
-                                0].text.strip().translate(str.maketrans('', '', string.punctuation))
-                        except IndexError:
-                            race1 = ""
+
+                    try:
+                        region1 = matchPage.select("div.match.upcoming > div > div > div.region")[0].text.strip().translate(str.maketrans('', '', string.punctuation))
+                    except IndexError:
+                        region1 = ""
+                    try:
+                        region2 = matchPage.select("div.match.upcoming > div > div > div.region")[1].text.strip().translate(str.maketrans('', '', string.punctuation))
+                    except IndexError:
+                        region2 = ""
+                    try:
+                        race1 = matchPage.select("div.game-data > div.team-1 > div.row > span.faction")[
+                            0].text.strip().translate(str.maketrans('', '', string.punctuation))
+                    except IndexError:
+                        race1 = ""
+                    try:
+                        race2 = matchPage.select("div.game-data > div.team-2 > div.row > span.faction")[
+                            0].text.strip().translate(str.maketrans('', '', string.punctuation))
+                    except IndexError:
+                        race2 = ""
+
+                    if not gosu_p1 == players[0]:
+                        tempRe1 = region1
+                        tempRa1 = race1
+                        region1 = region2
+                        race1 = race2
+                        region2 = tempRe1
+                        race2 = tempRa1
 
                     if len(intArr) == 1:
                         return intArr[0], id, race1, region1, race2, region2
                     else:
                         return None, None, None, None, None, None
 
-        return None, None
+        return None, None, None, None, None, None
 
 class LootMatch:
     def __init__(self, player1, p1Race, p1Country, player2, p2Race, p2Country, bestOf, odds1, odds2, id, dt):

@@ -1,15 +1,14 @@
-import codecs, csv
 from player_profile import PlayerProfile
 from random import shuffle
 from scipy.stats import binom
 import numpy as np
-from copy import deepcopy
 from models.linear import Linear
 from models.logistic import Logistic
 from models.glicko import Glicko
 from models.elo import Elo
 from models.svm import SVM
-from datetime import datetime
+from models.mlp import MLP
+from datetime import datetime, timezone, date as dtdate
 import helper
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
@@ -17,16 +16,25 @@ import scipy.stats
 from queue import Queue
 from crawler.gosu_crawler import Crawler
 import threading
-from crawler.lootbet_crawler import LootCrawler, LootMatch
+from crawler.lootbet_crawler import LootCrawler
 import time
 import random
+import pandas as pd
+import tracemalloc
+import os
+import psutil
+import linecache
+import gc
 
+"""
+Now uses the aligulac database from http://aligulac.com/about/db/
+"""
 class ModelRunner:
-    def __init__(self, model, fileName, lastGameId, trainRatio=0.8, testRatio=0.2, startCash = 10000, cleaner=helper.gosuCleaner()):
+    def __init__(self, model, fileName, lastGameId=None, trainRatio=0.8, testRatio=0.2, startCash = 10000, cleaner=helper.gosuCleaner(), keepPercent=1.0):
         self.model = model
         self.profiles = {}
         self.fileName = fileName
-        self.inDict = {'profile1': [], 'profile2': [], 'matches': []}
+        self.inDict = {'features': [], 'matches': []}
         self.trainRatio = trainRatio
         self.testRatio = testRatio
         self.profileUpdateQueue = Queue()
@@ -34,28 +42,77 @@ class ModelRunner:
         self.startcash = startCash
         self.lastGameId = lastGameId
         self.cleaner = cleaner
+        self.months = {'January': 1, 'February': 2, 'March': 3, 'April': 4,
+                       'May': 5, 'June': 6, 'July': 7, 'August': 8,
+                       'September': 9, 'October': 10, 'November': 11, 'December': 12}
+        # Percentage of data to keep for training in case data is too large to fit in memory
+        self.keepPercent = keepPercent
 
-    def runFile(self, fileName=None, test=False, validation=False):
+        self.overallBalance = startCash
+
+        self.balanceHistory = []
+
+    def runFile(self, fileName=None, keepFeats=True, skipProb=0.0):
         if fileName is None:
             fileName = self.fileName
         # trainLines = -1
         # testLines = -1
-        if test:
-            with codecs.open(fileName, "r", "utf-8") as file:
-                lines = sum(1 for line in file)
-            # print(lines)
-            # trainLines = int(lines * self.trainRatio)
-            # testLines = int(lines * self.testRatio)
-            # print(trainLines)
-            # print(testLines)
-        with codecs.open(fileName, "r", "utf-8") as file:
 
-            reader = csv.DictReader(file)
-            for row in reader:
+        df = pd.read_csv(fileName, dtype=str, keep_default_na=False)
+        df = df.to_dict("records")
+
+        # Cull the matches with players who appear very seldomly
+        players = {}
+        lastId = None
+        for row in df:
+            if not row['Player1'] in players:
+                players[row['Player1']] = 1
+            players[row['Player1']] += 1
+            if not row['Player2'] in players:
+                players[row['Player2']] = 1
+            players[row['Player2']] += 1
+            lastId = row['Id']
+        self.lastGameId = str(lastId)
+
+        def filterList(row):
+            if players[row['Player1']] <= 10 or players[row['Player2']] <= 10:
+                return False
+            if (not row['Player1Region'] in helper.REGION_DICT) or (not row['Player2Region'] in helper.REGION_DICT):
+                return False
+
+            return True
+
+        numDelete = 0
+        for row in df:
+            if not filterList(row):
+                numDelete += 1
+        print("Delete seldom percentage", numDelete / float(len(df)))
+        print("Length before culling", len(df))
+        df[:] = (x for x in df if filterList(x))
+
+        print("Length after culling", len(df))
+
+
+        print("File Read")
+
+        temp_count = 0
+        for row in df:
+            if random.random() > skipProb:
+                row['Player1'] = row['Player1'].lower()
+                row['Player2'] = row['Player2'].lower()
+
                 matchesOut = self.runGame(row)
-                self.inDict['profile1'] = self.inDict['profile1'] + matchesOut['profile1']
-                self.inDict['profile2'] = self.inDict['profile2'] + matchesOut['profile2']
-                self.inDict['matches'] = self.inDict['matches'] + matchesOut['matches']
+                if keepFeats:
+                    self.inDict['features'].append(matchesOut['features'])
+                    self.inDict['matches'].append(matchesOut['matches'])
+
+                temp_count += 1
+                if temp_count % 20000 == 0:
+                    print(temp_count)
+
+        self.inDict['features'] = [item for sublist in self.inDict['features'] for item in sublist]
+        self.inDict['matches'] = [item for sublist in self.inDict['matches'] for item in sublist]
+
 
 
     def runGame(self, game):
@@ -73,7 +130,7 @@ class ModelRunner:
         idx1 = self.findProfileIdx(name=game['Player1'], race=race1, country=game['Player1Region'])
         idx2 = self.findProfileIdx(name=game['Player2'], race=race2, country=game['Player2Region'])
 
-        out = {'profile1': [], 'profile2': [], 'matches': []}
+        out = {'features': [], 'matches': []}
         shuffledMatches = self.shuffleGames(int(game['Score1']), int(game['Score2']))
 
 
@@ -82,17 +139,32 @@ class ModelRunner:
             # Since profile update happens after the game is over, whereas prediction happens before the game
             # self.model.update(self.profiles[game['Player1']], self.profiles[game['Player2']], match)
 
+
+            # More efficient strptime given we know our format
+            # date = datetime.strptime(game['Date'], self.profiles[game['Player1']][idx1].dateFormat).date()
+            d = game['Date'].split()
+            year = int(d[3])
+            month = self.months[d[1]]
+            day = int(d[2])
+            date = dtdate(year=year, month=month, day=day)
             # Check decay
-            date = datetime.strptime(game['Date'], self.profiles[game['Player1']][idx1].dateFormat).date()
+
             self.profiles[game['Player1']][idx1].checkDecay(date)
             self.profiles[game['Player2']][idx2].checkDecay(date)
 
-            out['profile1'].append(deepcopy(self.profiles[game['Player1']][idx1]))
-            out['profile2'].append(deepcopy(self.profiles[game['Player2']][idx2]))
-            out['matches'].append(match)
+            # Json load and dump is faster than deepcopy by a huge margin
+            # out['profile1'].append(ujson.loads(ujson.dumps(self.profiles[game['Player1']][idx1])))
+            # out['profile2'].append(ujson.loads(ujson.dumps(self.profiles[game['Player2']][idx2])))
+            if random.random() <= self.keepPercent:
+                out['features'].append(self.model.getFeatures(self.profiles[game['Player1']][idx1], self.profiles[game['Player2']][idx2]))
+                out['matches'].append(match)
 
-            self.profiles[game['Player1']][idx1].updateProfile(game['Date'], self.profiles[game['Player2']][idx2], match[0] == 1)
-            self.profiles[game['Player2']][idx2].updateProfile(game['Date'], self.profiles[game['Player1']][idx1], match[1] == 1)
+                # out['profile1'].append(pickle.loads(pickle.dumps(self.profiles[game['Player1']][idx1], -1)))
+                # out['profile2'].append(pickle.loads(pickle.dumps(self.profiles[game['Player2']][idx2], -1)))
+                # out['matches'].append(match)
+
+            self.profiles[game['Player1']][idx1].updateProfile(date, self.profiles[game['Player2']][idx2], match[0])
+            self.profiles[game['Player2']][idx2].updateProfile(date, self.profiles[game['Player1']][idx1], match[1])
 
         return out
 
@@ -103,10 +175,23 @@ class ModelRunner:
             return 0
 
         profilesSameName = self.profiles[name]
+
+        if len(profilesSameName) == 1:
+            profile = profilesSameName[0]
+            if race == "" and profile.country == country:
+                return 0
+            if country == "" and profile.race == race:
+                return 0
+            if country == "" and race == "":
+                return 0
+
         for i in range(len(profilesSameName)):
             profile = profilesSameName[i]
             if profile.name == name and profile.race == race and profile.country == country:
                 return i
+            if race == "":
+                if profile.name == name and profile.country == country:
+                    return i
 
         # Add profile if it doesn't exist but there's already someone with the same name
         self.profiles[name].append(PlayerProfile(name=name, race=race, region=country))
@@ -115,21 +200,32 @@ class ModelRunner:
     def profileExists(self, name, race, country):
         if not name in self.profiles:
             return False
+
         profilesSameName = self.profiles[name]
+
+        if len(profilesSameName) == 1:
+            profile = profilesSameName[0]
+            if race == "" and profile.country == country:
+                return True
+            if country == "" and profile.race == race:
+                return True
+            if country == "" and race == "":
+                return True
+
         for profile in profilesSameName:
             if profile.name == name and profile.race == race and profile.country == country:
                 return True
+            if race == "":
+                if profile.name == name and profile.country == country:
+                    return True
         return False
 
     def createTTV(self, trainPercentage=0.7, testPercentage=0.15):
         # Create train, test, and validate
         inArr = []
         matchArr = []
-        for (player1, player2, match) in zip(self.inDict['profile1'], self.inDict['profile2'], self.inDict['matches']):
-            inArr.append(np.array([player1, player2]))
-            matchArr.append(np.array(match))
-        inArr = np.array(inArr)
-        matchArr = np.array(matchArr)
+        inArr = np.array(self.inDict['features'])
+        matchArr = np.array(self.inDict['matches'])
 
         print(inArr.shape)
         print(matchArr.shape)
@@ -147,13 +243,13 @@ class ModelRunner:
         self.test_X, self.val_X, self.test_Y, self.val_Y = train_test_split(test_x, test_y, train_size=(testPercentage)/(1 - trainPercentage))
         assert(len(self.test_X) == len(self.test_Y))
 
-    def updateModel(self):
+    def updateModel(self, full=False):
         # Must be called after createTTV
-        self.model.update(self.train_X, self.train_Y)
+        self.model.updateRaw(self.train_X, self.train_Y, self.val_X, self.val_Y, full)
 
     def testModel(self):
         # Must be called after createTTV
-        predictions = self.model.predictBatch(self.test_X)
+        predictions = self.model.predictBatchRaw(self.test_X)
         print(predictions)
         real = self.test_Y
         total = 0
@@ -180,9 +276,9 @@ class ModelRunner:
         for i in range(0, len(real)):
             matchIndex = np.argmax(preds[i])
             bucketIndex = int(max(preds[i][0], preds[i][1]) * 50) - 25
-            if bucketIndex == 20:
+            if bucketIndex == 25:
                 # If 100% prediction
-                bucketIndex = 19
+                bucketIndex = 24
             buckets[bucketIndex][0] += real[i][matchIndex]
             buckets[bucketIndex][1] += 1
             bucketTotals[bucketIndex].append(real[i][matchIndex])
@@ -218,6 +314,7 @@ class ModelRunner:
         # plt.title("Actual vs Predicted Winrate")
         # plt.legend()
         # plt.show()
+        gc.collect()
 
         return np.sum(np.square(preds[:, 0] - real[:, 0]))/len(preds)
 
@@ -233,9 +330,10 @@ class ModelRunner:
     def predict(self, player1, p1Race, p1Country, player2, p2Race, p2Country):
         if not self.profileExists(name=player1, race=p1Race, country=p1Country):
             print("First Time Player in Predict:", player1, "[NEW]", player2)
+            raise PlayerNotFoundException(player1)
         if not self.profileExists(name=player1, race=p1Race, country=p1Country):
             print("First Time Player in Predict:", player1, player2, "[NEW]")
-
+            raise PlayerNotFoundException(player2)
 
         idx1 = self.findProfileIdx(player1, p1Race, p1Country)
         idx2 = self.findProfileIdx(player2, p2Race, p2Country)
@@ -274,7 +372,7 @@ class ModelRunner:
     def getLive(self):
         # Grab live data from gosugamers and put it into the update queue
         url = "https://www.gosugamers.net/starcraft2/matches/results?sortBy=date-asc&maxResults=18"
-        c = Crawler(url, fileName="data/matchResults_regionsRaces.csv", cleaner=self.cleaner)
+        c = Crawler(url, fileName=self.fileName, cleaner=self.cleaner)
         # c.start()
         liveGen = c.liveGenerator(fromPage=593, lastGameId=self.lastGameId)
         for i in liveGen:
@@ -284,7 +382,7 @@ class ModelRunner:
         crawlerThread = threading.Thread(target=self.getLive)
         crawlerThread.start()
         flag = False
-        lc = LootCrawler(url="https://loot.bet/sport/esports/starcraft",
+        lc = LootCrawler(url="https://loot.bet/sport/esports/starcraft-2",
                          gosuUrl="https://www.gosugamers.net/starcraft2/matches", cleaner=self.cleaner)
         betOnMatches = {}
         timesSpecial = 4
@@ -297,28 +395,33 @@ class ModelRunner:
                 if rawMatch['Id'] in betOnMatches:
                     print("Result:", rawMatch['Date'], rawMatch['Player1'], rawMatch['Player2'])
                     if int(rawMatch['Score1']) > int(rawMatch['Score2']):
-                        if betOnMatches[rawMatch['Id']][0] == rawMatch['Player1']:
-                            self.cash += betOnMatches[rawMatch['Id']][1]
-                            print("Win:", betOnMatches[rawMatch['Id']][1])
+                        if betOnMatches[rawMatch['Id']]['player'] == rawMatch['Player1']:
+                            self.cash += betOnMatches[rawMatch['Id']]['decOdds']
+                            self.overallBalance += betOnMatches[rawMatch['Id']]['toWin']
+                            print("Win:", betOnMatches[rawMatch['Id']]['decOdds'])
                         else:
-                            print("Lose:", betOnMatches[rawMatch['Id']][1])
+                            self.overallBalance -= betOnMatches[rawMatch['Id']]['dec']
+                            print("Lose:", betOnMatches[rawMatch['Id']]['decOdds'])
+                        self.balanceHistory.append(self.overallBalance)
                     elif int(rawMatch['Score1']) < int(rawMatch['Score2']):
-                        if betOnMatches[rawMatch['Id']][0] == rawMatch['Player2']:
-                            self.cash += betOnMatches[rawMatch['Id']][1]
+                        if betOnMatches[rawMatch['Id']]['player'] == rawMatch['Player2']:
+                            self.cash += betOnMatches[rawMatch['Id']]['decOdds']
+                            self.overallBalance += betOnMatches[rawMatch['Id']]['toWin']
                             print("Win:", betOnMatches[rawMatch['Id']][1])
                         else:
+                            self.overallBalance -= betOnMatches[rawMatch['Id']]['dec']
                             print("Lose:", betOnMatches[rawMatch['Id']][1])
+                        self.balanceHistory.append(self.overallBalance)
                     else:
                         print("TIE OR DRAW???", rawMatch['Id'], rawMatch['Player1'], rawMatch['Player2'])
                         # Assume refund?
-                        self.cash += betOnMatches[rawMatch['Id']][2]
-                        print("Refund:", betOnMatches[rawMatch['Id']][2])
+                        self.cash += betOnMatches[rawMatch['Id']]['dec']
+                        print("Refund:", betOnMatches[rawMatch['Id']]['dec'])
                     betOnMatches.pop(rawMatch['Id'])
                     print("New Balance:", self.cash, "ROI Since Start:", (self.cash - self.startcash)/float(self.startcash))
 
                 matchesOut = self.runGame(rawMatch)
-                self.inDict['profile1'] = self.inDict['profile1'] + matchesOut['profile1']
-                self.inDict['profile2'] = self.inDict['profile2'] + matchesOut['profile2']
+                self.inDict['features'] = self.inDict['features'] + matchesOut['features']
                 self.inDict['matches'] = self.inDict['matches'] + matchesOut['matches']
 
 
@@ -327,35 +430,44 @@ class ModelRunner:
             if len(matches) > 0:
                 for match in matches:
 
-                    if (match.dt - datetime.utcnow()).minutes < 30:
+                    if (match.dt - datetime.now(timezone.utc)).seconds * 60 < 30:
                         timesSpecial = 4
 
                     if not match.id in betOnMatches:
-                        _, p1win, p2win = self.predictSeries(player1=match.player1, p1Race=match.p1Race,
+                        try:
+                            _, p1win, p2win = self.predictSeries(player1=match.player1, p1Race=match.p1Race,
                                                              p1Country=match.p1Country, player2=match.player2, p2Race=match.p2Race,
                                                              p2Country=match.p2Country, bestOf=match.bestOf)
-
+                        except PlayerNotFoundException:
+                            print("One of two players not found:", match.player1, match.player2)
+                            continue
                         if p1win*match.odds1 > 1. or p2win*match.odds2 > 1.:
                             if p1win*match.odds1 > 1. and p2win*match.odds2 > 1.:
                                 print("Both sides of the bet are >1? Something must have gone wrong with the bookie? Or with our model?")
                                 print("P1", p1win, "Odds1", match.odds1, "P2", p2win, "Odds2", match.odds2)
                             EV = [p1win*match.odds1, p2win*match.odds2]
                             betterBet = np.argmax(EV)
+                            dec = 0
+                            betOdds = 1
                             if betterBet == 0:
                                 dec = self.betDecision(prob=p1win, odds=match.odds1)
                                 decOdds = dec*match.odds1
+                                betOdds = match.odds1
                                 print("Bet:", match.player1, "vs", match.player2, "Amount:", dec, "Edge+1:",
                                       p1win * match.odds1, "Prob", p1win)
                                 betOn = match.player1
                             else:
                                 dec = self.betDecision(prob=p2win, odds=match.odds2)
                                 decOdds = dec * match.odds2
+                                betOdds = match.odds2
                                 print("Bet:", match.player2, "vs", match.player1, "Amount:", dec, "Edge+1:",
                                       p2win * match.odds2, "Prob", p2win)
                                 betOn = match.player2
                             if dec > 0:
-                                betOnMatches[match.id] = [betOn, decOdds, dec]
+                                betOnMatches[match.id] = {'player':betOn, 'decOdds':decOdds, 'dec':dec, 'toWin':(betOdds - 1)*dec}
                                 self.cash -= dec
+                        else:
+                            print("Odds were not in our favour", match.player1, p1win, p1win*match.odds1, match.player2, p2win, p2win*match.odds2)
 
             randomizer = random.uniform(0.8, 1.2)
             if timesSpecial > 0:
@@ -410,9 +522,20 @@ class ModelRunner:
             out.append([k, winRates[k]])
         return out
 
+    def clearMemory(self):
+        self.inDict = {'features': [], 'matches': []}
+        self.train_X = []
+        self.train_Y = []
+        self.test_X = []
+        self.val_X = []
+        self.test_Y = []
+        self.val_Y = []
+        gc.collect()
 
-class PlayerNotFoundException(Exception):
-    pass
+
+class PlayerNotFoundException(RuntimeError):
+    def __init__(self, player):
+        self.player = player
 
 
 
@@ -422,40 +545,62 @@ if __name__ == "__main__":
     #model = Linear()
     #model = Glicko()
     #model = Elo()
-    model = Logistic(useRaceElo=True)
+    #model = Logistic(useRaceElo=True)
     #model = SVM(C=10)
+    model = MLP(max_epochs=10000, batch_size=128, learning_rate=5e-3)
     print('Model Created')
-    runner = ModelRunner(model, "data/matchResults_properTimeout.csv", trainRatio=0.8, testRatio=0.2, lastGameId="297265")
-    print('Model Runner Created')
-    runner.runFile(test=True)
-    print('File Run')
-    runner.createTTV(0.7, 0.2)
+    runner = ModelRunner(model, "data/matchResults_aligulac.csv", trainRatio=0.8, testRatio=0.2, lastGameId="296378", keepPercent=1.0)
+    print(datetime.now(), 'Model Runner Created')
+    # lp = LineProfiler()
+    # lp.add_function(runner.runGame)
+    # lp_wrapper = lp(runner.runFile)
+    # lp_wrapper()
+    # lp.print_stats()
 
-    print('TTV Separated')
-    runner.updateModel()
-    print('Model Updated')
-    runner.testModel()
+    runner.runFile(keepFeats=False)
+    print(datetime.now(), 'File Run')
 
-    maruAliveResults = runner.predict("Maru", "Terran", "Korea Republic of", "aLive", "Terran", "Korea Republic of")
+    #LOAD IN PREVIOUSLY TRAINED MLP MODEL
+    # runner.model.model.load_weights("backups/mlp_best.h5")
+    # print("Loaded model from disk")
+    # runner.createTTV(1.0, 0.0)
+    # runner.model.fitScaler(runner.train_X)
+    runner.model.loadBackup()
+
+    #runner.createTTV(0.7, 0.2)
+
+    # print(datetime.now(), 'TTV Separated')
+    # runner.updateModel()
+    # print(datetime.now(), 'Model Updated')
+    # runner.testModel()
+
+    maruAliveResults = runner.predict("maru", "Terran", "Korea Republic of", "alive", "Terran", "Korea Republic of")
     print("Maru", maruAliveResults[0], "aLive", maruAliveResults[1])
-    print(runner.predictSeries("Maru", "Terran", "Korea Republic of", "aLive", "Terran", "Korea Republic of", 1))
+    print(runner.predictSeries("maru", "Terran", "Korea Republic of", "alive", "Terran", "Korea Republic of", 1))
 
     # for key in runner.profiles.keys():
     #     runner.profiles[key].checkDecay(datetime.now().date())
 
     # USE FOR REAL NOW
-    runner.createTTV(1.0,0.0)
-    runner.updateModel()
+    # runner.createTTV(1.0,0.0)
+    # runner.updateModel(full=True)
     print("Used all matches for training, ready for deployment")
 
-    maruAliveResults = runner.predict("Maru", "Terran", "Korea Republic of", "Classic", "Protoss", "Korea Republic of")
+    maruAliveResults = runner.predict("maru", "Terran", "Korea Republic of", "classic", "Protoss", "Korea Republic of")
     print("Maru", maruAliveResults[0], "Classic", maruAliveResults[1])
-    print(runner.predictSeries("Maru", "Terran", "Korea Republic of", "Classic", "Protoss", "Korea Republic of", 7))
+    print(runner.predictSeries("maru", "Terran", "Korea Republic of", "classic", "Protoss", "Korea Republic of", 7))
+    print("Harstem Clem",
+          runner.predictSeries("harstem", "Protoss", "Netherlands", "clem", "Terran", "France", 9))
 
+    print("Leenock Hurricane", runner.predictSeries("leenock", "Zerg", "Korea Republic of", "hurricane", "Protoss", "Korea Republic of", 3))
     rankingsList = runner.generateRanking(20)
     rank = 1
+    print("Rank, Name, Race, Country, Project W/R, Elo, Glicko, MatchExpAvg")
     for [rate, profile] in rankingsList:
-        print(rank, profile.name, rate, profile.elo)
+        print(rank, profile.name, profile.race, profile.country, rate, profile.elo, profile.glickoRating, profile.expOverall)
         rank += 1
-
+    # print(runner.model.model.coef_)
+    # print("[mu, phi, timeWeightedRating, normRace, glickoE, self.elo, E_A, raceElo, raceE_A, self.expOverall, raceEXP, h2hExp, raceEloRatio]")
+    runner.clearMemory()
+    print("Memory Cleared")
     runner.runLive()

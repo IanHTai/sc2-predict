@@ -58,3 +58,19 @@ class SVM(Model):
             # Xs.append(features2 + features1)
             # Ys.append(matches[i][1])
         print("model score", self.model.score(self.scaler.transform(Xs), Ys))
+
+    def updateRaw(self, features, matches, valFeatures, valMatches):
+        transformedMatches = [match[1] for match in matches]
+        self.model.fit(self.scaler.fit_transform(features), transformedMatches)
+
+    def predictRaw(self, features):
+        features = np.array(features).reshape(1, -1)
+        return self.model.predict_proba(self.scaler.transform(features))[0]
+
+    def predictBatchRaw(self, features):
+        return self.model.predict_proba(self.scaler.transform(features))
+
+    def getFeatures(self, profile1, profile2):
+        features1 = profile1.getFeatures(profile2, useRaceRatio=self.useRaceRatio)
+        features2 = profile2.getFeatures(profile1, useRaceRatio=self.useRaceRatio)
+        return features1 + features2

@@ -8,6 +8,9 @@ class Model:
         """
         raise NotImplementedError()
 
+    def updateRaw(self, features, matches):
+        raise NotImplementedError()
+
     def predict(self, profile1, profile2):
         raise NotImplementedError()
 
@@ -15,4 +18,13 @@ class Model:
         raise NotImplementedError()
 
     def test(self, profiles1, profiles2, matches):
+        raise NotImplementedError()
+
+    def getFeatures(self, profile1, profile2):
+        raise NotImplementedError()
+
+    def predictRaw(self, features):
+        raise NotImplementedError()
+
+    def predictBatchRaw(self, features):
         raise NotImplementedError()
