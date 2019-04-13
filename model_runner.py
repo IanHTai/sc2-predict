@@ -12,6 +12,7 @@ from player_profile import PlayerProfile
 
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 import io
 import base64
 import scipy.stats
@@ -561,6 +562,7 @@ class ModelRunner:
             plt.plot(x, y)
             plt.xlabel('Time')
             plt.ylabel('Balance')
+            plt.xticks(rotation=90)
             plt.savefig(img, format='png')
             img.seek(0)
             graph_url = base64.b64encode(img.getvalue()).decode()
