@@ -1,7 +1,8 @@
 import math
 from datetime import datetime, timedelta
+
 import helper
-import numpy as np
+
 
 class PlayerProfile:
     def __init__(self, name, race, firstDate=None, region=""):

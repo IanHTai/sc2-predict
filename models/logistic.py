@@ -1,7 +1,9 @@
-from sklearn.linear_model import LogisticRegression
-from models.model import Model
 import numpy as np
+from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler
+
+from models.model import Model
+
 
 class Logistic(Model):
     def __init__(self, useRaceElo=False, useRD=False):

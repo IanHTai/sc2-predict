@@ -1,8 +1,8 @@
-import psycopg2
-import pandas as pd
 import config_sql as creds
+import pandas as pd
+import psycopg2
 import pycountry
-import datetime
+
 
 class AligulacSQL:
     """

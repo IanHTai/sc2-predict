@@ -1,12 +1,14 @@
-from bs4 import BeautifulSoup
-import requests
-from multiprocessing import Pool
-import time
 import codecs
 import csv
-import string
 import random
+import string
+import time
+
+import requests
+from bs4 import BeautifulSoup
+
 import helper
+
 
 class Crawler:
     def __init__(self, url, fileName="../data/matchResults_regionsRaces.csv", cleaner=helper.gosuCleaner()):

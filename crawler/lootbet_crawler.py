@@ -1,13 +1,15 @@
-from bs4 import BeautifulSoup
-import requests
-import codecs
 import datetime
+import random
+import string
+import time
+
 import dateutil.parser
 import dateutil.tz
-import time
-import random
+import requests
+from bs4 import BeautifulSoup
+
 import helper
-import string
+
 
 class LootCrawler:
     def __init__(self, url, gosuUrl, cleaner=helper.gosuCleaner()):

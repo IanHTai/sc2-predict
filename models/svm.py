@@ -1,7 +1,10 @@
-from models.model import Model
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
+
+from models.model import Model
+
+
 class SVM(Model):
     def __init__(self, C=1.0, gamma='auto', useRaceRatio=True):
         self.model = SVC(C=C, gamma=gamma, probability=True)

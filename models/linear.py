@@ -1,7 +1,9 @@
+import numpy as np
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import StandardScaler
+
 from models.model import Model
-import numpy as np
+
 
 class Linear(Model):
     def __init__(self):

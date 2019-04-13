@@ -1,17 +1,15 @@
-from player_profile import PlayerProfile
-from random import shuffle
-from scipy.stats import binom
-import numpy as np
-from models.linear import Linear
-from models.logistic import Logistic
-from models.glicko import Glicko
-from models.elo import Elo
-from models.svm import SVM
-from models.mlp import MLP
 from datetime import datetime, timezone, date as dtdate
-import helper
-from sklearn.model_selection import train_test_split
+from random import shuffle
+
 import matplotlib
+import numpy as np
+from scipy.stats import binom
+from sklearn.model_selection import train_test_split
+
+import helper
+from models.mlp import MLP
+from player_profile import PlayerProfile
+
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import io

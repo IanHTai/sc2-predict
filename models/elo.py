@@ -1,5 +1,7 @@
-from models.model import Model
 import numpy as np
+
+from models.model import Model
+
 
 class Elo(Model):
     """

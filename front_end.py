@@ -1,15 +1,18 @@
-from flask import Flask, render_template, request, redirect, url_for
-from model_runner import ModelRunner
-from models.mlp import MLP
-from gevent.pywsgi import WSGIServer
-from datetime import datetime
-import helper
-from flask_wtf import FlaskForm
-from wtforms import StringField, validators, SelectField, IntegerField
-from uuid import UUID
 import random
 import threading
+from datetime import datetime
+from uuid import UUID
+
+from flask import Flask, render_template, request, redirect, url_for
+from flask_wtf import FlaskForm
+from gevent.pywsgi import WSGIServer
+from wtforms import StringField, validators, SelectField, IntegerField
+
+import helper
+from model_runner import ModelRunner
 from model_runner import NoBetsYetExceptions
+from models.mlp import MLP
+
 
 class PlayersForm(FlaskForm):
     player1 = StringField("Name of First Player (case insensitive)", [validators.DataRequired("Please enter a player name.")])

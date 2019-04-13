@@ -1,6 +1,9 @@
 import unittest
+
 import pytest
+
 from player_profile import PlayerProfile
+
 
 class GlickoTests(unittest.TestCase):
     def testGlicko(self):
