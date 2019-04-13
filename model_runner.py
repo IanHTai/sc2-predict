@@ -11,7 +11,11 @@ from models.mlp import MLP
 from datetime import datetime, timezone, date as dtdate
 import helper
 from sklearn.model_selection import train_test_split
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+import io
+import base64
 import scipy.stats
 from queue import Queue
 from crawler.gosu_crawler import Crawler
@@ -20,17 +24,14 @@ from crawler.lootbet_crawler import LootCrawler
 import time
 import random
 import pandas as pd
-import tracemalloc
-import os
-import psutil
-import linecache
 import gc
+import pickle
 
 """
 Now uses the aligulac database from http://aligulac.com/about/db/
 """
 class ModelRunner:
-    def __init__(self, model, fileName, lastGameId=None, trainRatio=0.8, testRatio=0.2, startCash = 10000, cleaner=helper.gosuCleaner(), keepPercent=1.0):
+    def __init__(self, model, fileName, lastGameId=None, trainRatio=0.8, testRatio=0.2, startCash = 10000, cleaner=helper.gosuCleaner(), keepPercent=1.0, decay=True):
         self.model = model
         self.profiles = {}
         self.fileName = fileName
@@ -50,7 +51,17 @@ class ModelRunner:
 
         self.overallBalance = startCash
 
-        self.balanceHistory = []
+        self.balanceHistory = [[datetime.now(), startCash]]
+        self.betOnMatches = {}
+
+        self.decay = decay
+
+    def getLastId(self):
+        df = pd.read_csv(self.fileName, dtype=str, keep_default_na=False)
+        df = df.to_dict("records")
+        lastId = next(reversed(df))['Id']
+        self.lastGameId = str(lastId)
+        return self.lastGameId
 
     def runFile(self, fileName=None, keepFeats=True, skipProb=0.0):
         if fileName is None:
@@ -75,7 +86,7 @@ class ModelRunner:
         self.lastGameId = str(lastId)
 
         def filterList(row):
-            if players[row['Player1']] <= 10 or players[row['Player2']] <= 10:
+            if players[row['Player1']] <= 25 or players[row['Player2']] <= 25:
                 return False
             if (not row['Player1Region'] in helper.REGION_DICT) or (not row['Player2Region'] in helper.REGION_DICT):
                 return False
@@ -132,8 +143,16 @@ class ModelRunner:
 
         out = {'features': [], 'matches': []}
         shuffledMatches = self.shuffleGames(int(game['Score1']), int(game['Score2']))
+        d = game['Date'].split()
+        year = int(d[3])
+        month = self.months[d[1]]
+        day = int(d[2])
+        date = dtdate(year=year, month=month, day=day)
 
-
+        # Check decay
+        if self.decay:
+            self.profiles[game['Player1']][idx1].checkDecay(date)
+            self.profiles[game['Player2']][idx2].checkDecay(date)
         for match in shuffledMatches:
             # Model is updated before profiles in order to ensure prediction order is maintained
             # Since profile update happens after the game is over, whereas prediction happens before the game
@@ -142,15 +161,6 @@ class ModelRunner:
 
             # More efficient strptime given we know our format
             # date = datetime.strptime(game['Date'], self.profiles[game['Player1']][idx1].dateFormat).date()
-            d = game['Date'].split()
-            year = int(d[3])
-            month = self.months[d[1]]
-            day = int(d[2])
-            date = dtdate(year=year, month=month, day=day)
-            # Check decay
-
-            self.profiles[game['Player1']][idx1].checkDecay(date)
-            self.profiles[game['Player2']][idx2].checkDecay(date)
 
             # Json load and dump is faster than deepcopy by a huge margin
             # out['profile1'].append(ujson.loads(ujson.dumps(self.profiles[game['Player1']][idx1])))
@@ -235,12 +245,12 @@ class ModelRunner:
             self.train_Y = matchArr
             return
 
-        self.train_X, test_x, self.train_Y, test_y = train_test_split(inArr, matchArr, train_size=trainPercentage)
+        self.train_X, test_x, self.train_Y, test_y = train_test_split(inArr, matchArr, train_size=trainPercentage, shuffle=True)
         print(self.train_X.shape, self.train_Y.shape, test_x.shape, test_y.shape)
         assert(len(test_x) == len(test_y))
 
 
-        self.test_X, self.val_X, self.test_Y, self.val_Y = train_test_split(test_x, test_y, train_size=(testPercentage)/(1 - trainPercentage))
+        self.test_X, self.val_X, self.test_Y, self.val_Y = train_test_split(test_x, test_y, train_size=(testPercentage)/(1 - trainPercentage), shuffle=True)
         assert(len(self.test_X) == len(self.test_Y))
 
     def updateModel(self, full=False):
@@ -337,6 +347,9 @@ class ModelRunner:
 
         idx1 = self.findProfileIdx(player1, p1Race, p1Country)
         idx2 = self.findProfileIdx(player2, p2Race, p2Country)
+        if self.decay:
+            self.profiles[player1][idx1].checkDecay(datetime.now().date())
+            self.profiles[player2][idx2].checkDecay(datetime.now().date())
 
         return self.model.predict(self.profiles[player1][idx1], self.profiles[player2][idx2])
 
@@ -384,7 +397,7 @@ class ModelRunner:
         flag = False
         lc = LootCrawler(url="https://loot.bet/sport/esports/starcraft-2",
                          gosuUrl="https://www.gosugamers.net/starcraft2/matches", cleaner=self.cleaner)
-        betOnMatches = {}
+
         timesSpecial = 4
         specialSleepTime = 20*60
 
@@ -392,37 +405,37 @@ class ModelRunner:
         while not flag:
             while not self.profileUpdateQueue.empty():
                 rawMatch = self.profileUpdateQueue.get()
-                if rawMatch['Id'] in betOnMatches:
+                if rawMatch['Id'] in self.betOnMatches:
                     print("Result:", rawMatch['Date'], rawMatch['Player1'], rawMatch['Player2'])
                     if int(rawMatch['Score1']) > int(rawMatch['Score2']):
-                        if betOnMatches[rawMatch['Id']]['player'] == rawMatch['Player1']:
-                            self.cash += betOnMatches[rawMatch['Id']]['decOdds']
-                            self.overallBalance += betOnMatches[rawMatch['Id']]['toWin']
-                            print("Win:", betOnMatches[rawMatch['Id']]['decOdds'])
+                        if self.betOnMatches[rawMatch['Id']]['player'] == rawMatch['Player1']:
+                            self.cash += self.betOnMatches[rawMatch['Id']]['decOdds']
+                            self.overallBalance += self.betOnMatches[rawMatch['Id']]['toWin']
+                            print("Win:", self.betOnMatches[rawMatch['Id']]['decOdds'])
                         else:
-                            self.overallBalance -= betOnMatches[rawMatch['Id']]['dec']
-                            print("Lose:", betOnMatches[rawMatch['Id']]['decOdds'])
-                        self.balanceHistory.append(self.overallBalance)
+                            self.overallBalance -= self.betOnMatches[rawMatch['Id']]['dec']
+                            print("Lose:", self.betOnMatches[rawMatch['Id']]['decOdds'])
+                        self.balanceHistory.append([datetime.now(), self.overallBalance])
                     elif int(rawMatch['Score1']) < int(rawMatch['Score2']):
-                        if betOnMatches[rawMatch['Id']]['player'] == rawMatch['Player2']:
-                            self.cash += betOnMatches[rawMatch['Id']]['decOdds']
-                            self.overallBalance += betOnMatches[rawMatch['Id']]['toWin']
-                            print("Win:", betOnMatches[rawMatch['Id']][1])
+                        if self.betOnMatches[rawMatch['Id']]['player'] == rawMatch['Player2']:
+                            self.cash += self.betOnMatches[rawMatch['Id']]['decOdds']
+                            self.overallBalance += self.betOnMatches[rawMatch['Id']]['toWin']
+                            print("Win:", self.betOnMatches[rawMatch['Id']][1])
                         else:
-                            self.overallBalance -= betOnMatches[rawMatch['Id']]['dec']
-                            print("Lose:", betOnMatches[rawMatch['Id']][1])
-                        self.balanceHistory.append(self.overallBalance)
+                            self.overallBalance -= self.betOnMatches[rawMatch['Id']]['dec']
+                            print("Lose:", self.betOnMatches[rawMatch['Id']][1])
+                        self.balanceHistory.append([datetime.now(), self.overallBalance])
                     else:
                         print("TIE OR DRAW???", rawMatch['Id'], rawMatch['Player1'], rawMatch['Player2'])
                         # Assume refund?
-                        self.cash += betOnMatches[rawMatch['Id']]['dec']
-                        print("Refund:", betOnMatches[rawMatch['Id']]['dec'])
-                    betOnMatches.pop(rawMatch['Id'])
+                        self.cash += self.betOnMatches[rawMatch['Id']]['dec']
+                        print("Refund:", self.betOnMatches[rawMatch['Id']]['dec'])
+                    self.betOnMatches.pop(rawMatch['Id'])
                     print("New Balance:", self.cash, "ROI Since Start:", (self.cash - self.startcash)/float(self.startcash))
 
                 matchesOut = self.runGame(rawMatch)
-                self.inDict['features'] = self.inDict['features'] + matchesOut['features']
-                self.inDict['matches'] = self.inDict['matches'] + matchesOut['matches']
+                # self.inDict['features'] = self.inDict['features'] + matchesOut['features']
+                # self.inDict['matches'] = self.inDict['matches'] + matchesOut['matches']
 
 
             matches = lc.getMatches()
@@ -433,7 +446,7 @@ class ModelRunner:
                     if (match.dt - datetime.now(timezone.utc)).seconds * 60 < 30:
                         timesSpecial = 4
 
-                    if not match.id in betOnMatches:
+                    if not match.id in self.betOnMatches:
                         try:
                             _, p1win, p2win = self.predictSeries(player1=match.player1, p1Race=match.p1Race,
                                                              p1Country=match.p1Country, player2=match.player2, p2Race=match.p2Race,
@@ -453,18 +466,24 @@ class ModelRunner:
                                 dec = self.betDecision(prob=p1win, odds=match.odds1)
                                 decOdds = dec*match.odds1
                                 betOdds = match.odds1
-                                print("Bet:", match.player1, "vs", match.player2, "Amount:", dec, "Edge+1:",
-                                      p1win * match.odds1, "Prob", p1win)
+                                if dec > 0:
+                                    print("Bet:", match.player1, "vs", match.player2, "Amount:", dec, "Edge+1:",
+                                          p1win * match.odds1, "Prob", p1win)
+                                else:
+                                    print("Edge not big enough to bet", match.player1, p1win, p1win*match.odds1, match.player2, p2win, p2win*match.odds2)
                                 betOn = match.player1
                             else:
                                 dec = self.betDecision(prob=p2win, odds=match.odds2)
                                 decOdds = dec * match.odds2
                                 betOdds = match.odds2
-                                print("Bet:", match.player2, "vs", match.player1, "Amount:", dec, "Edge+1:",
-                                      p2win * match.odds2, "Prob", p2win)
+                                if dec > 0:
+                                    print("Bet:", match.player2, "vs", match.player1, "Amount:", dec, "Edge+1:",
+                                          p2win * match.odds2, "Prob", p2win)
+                                else:
+                                    print("Edge not big enough to bet", match.player1, p1win, p1win*match.odds1, match.player2, p2win, p2win*match.odds2)
                                 betOn = match.player2
                             if dec > 0:
-                                betOnMatches[match.id] = {'player':betOn, 'decOdds':decOdds, 'dec':dec, 'toWin':(betOdds - 1)*dec}
+                                self.betOnMatches[match.id] = {'player':betOn, 'decOdds':decOdds, 'dec':dec, 'toWin':(betOdds - 1)*dec}
                                 self.cash -= dec
                         else:
                             print("Odds were not in our favour", match.player1, p1win, p1win*match.odds1, match.player2, p2win, p2win*match.odds2)
@@ -523,15 +542,46 @@ class ModelRunner:
         return out
 
     def clearMemory(self):
-        self.inDict = {'features': [], 'matches': []}
-        self.train_X = []
-        self.train_Y = []
-        self.test_X = []
-        self.val_X = []
-        self.test_Y = []
-        self.val_Y = []
+        del self.inDict['features']
+        del self.inDict['matches']
+        if hasattr(self, "train_X"):
+            del self.train_X
+            del self.train_Y
+        if hasattr(self, "test_X"):
+            del self.test_X
+            del self.val_X
+            del self.test_Y
+            del self.val_Y
         gc.collect()
 
+    def graphBalance(self):
+        if len(self.balanceHistory) > 0:
+            bh = np.array(self.balanceHistory)
+            x = bh[:,0]
+            y = bh[:,1]
+            img = io.BytesIO()
+            plt.plot(x, y)
+            plt.xlabel('Time')
+            plt.ylabel('Balance')
+            plt.savefig(img, format='png')
+            img.seek(0)
+            graph_url = base64.b64encode(img.getvalue()).decode()
+            plt.close()
+            return 'data:image/png;base64,{}'.format(graph_url)
+        else:
+            raise NoBetsYetExceptions(datetime.now())
+
+    def dumpProfiles(self, fileName='backups/profiles.p'):
+        with open(fileName, "wb") as file:
+            pickle.dump(self.profiles, file)
+
+    def loadProfiles(self, fileName='backups/profiles.p'):
+        with open(fileName, "rb") as file:
+            self.profiles = pickle.load(file)
+
+class NoBetsYetExceptions(RuntimeError):
+    def __init__(self, dt):
+        self.dt = dt
 
 class PlayerNotFoundException(RuntimeError):
     def __init__(self, player):
@@ -547,32 +597,26 @@ if __name__ == "__main__":
     #model = Elo()
     #model = Logistic(useRaceElo=True)
     #model = SVM(C=10)
-    model = MLP(max_epochs=10000, batch_size=128, learning_rate=5e-3)
+    model = MLP(max_epochs=10000, batch_size=128, learning_rate=5e-3, width=50, layers=1)
     print('Model Created')
-    runner = ModelRunner(model, "data/matchResults_aligulac.csv", trainRatio=0.8, testRatio=0.2, lastGameId="296378", keepPercent=1.0)
+    runner = ModelRunner(model, "data/matchResults_aligulac.csv", trainRatio=0.8, testRatio=0.2, lastGameId="298916", keepPercent=1.0, decay=True)
     print(datetime.now(), 'Model Runner Created')
-    # lp = LineProfiler()
-    # lp.add_function(runner.runGame)
-    # lp_wrapper = lp(runner.runFile)
-    # lp_wrapper()
-    # lp.print_stats()
 
-    runner.runFile(keepFeats=False)
+    # runner.runFile(keepFeats=False)
+    runner.runFile(keepFeats=True)
     print(datetime.now(), 'File Run')
 
-    #LOAD IN PREVIOUSLY TRAINED MLP MODEL
-    # runner.model.model.load_weights("backups/mlp_best.h5")
-    # print("Loaded model from disk")
-    # runner.createTTV(1.0, 0.0)
-    # runner.model.fitScaler(runner.train_X)
-    runner.model.loadBackup()
+    """
+    Just Load Backup
+    """
+    # runner.model.loadBackup()
 
-    #runner.createTTV(0.7, 0.2)
 
-    # print(datetime.now(), 'TTV Separated')
-    # runner.updateModel()
-    # print(datetime.now(), 'Model Updated')
-    # runner.testModel()
+    runner.createTTV(0.7, 0.2)
+    print(datetime.now(), 'TTV Separated')
+    runner.updateModel()
+    print(datetime.now(), 'Model Updated')
+    runner.testModel()
 
     maruAliveResults = runner.predict("maru", "Terran", "Korea Republic of", "alive", "Terran", "Korea Republic of")
     print("Maru", maruAliveResults[0], "aLive", maruAliveResults[1])
@@ -582,8 +626,8 @@ if __name__ == "__main__":
     #     runner.profiles[key].checkDecay(datetime.now().date())
 
     # USE FOR REAL NOW
-    # runner.createTTV(1.0,0.0)
-    # runner.updateModel(full=True)
+    runner.createTTV(1.0,0.0)
+    runner.updateModel(full=True)
     print("Used all matches for training, ready for deployment")
 
     maruAliveResults = runner.predict("maru", "Terran", "Korea Republic of", "classic", "Protoss", "Korea Republic of")
@@ -599,8 +643,9 @@ if __name__ == "__main__":
     for [rate, profile] in rankingsList:
         print(rank, profile.name, profile.race, profile.country, rate, profile.elo, profile.glickoRating, profile.expOverall)
         rank += 1
+    runner.dumpProfiles()
     # print(runner.model.model.coef_)
     # print("[mu, phi, timeWeightedRating, normRace, glickoE, self.elo, E_A, raceElo, raceE_A, self.expOverall, raceEXP, h2hExp, raceEloRatio]")
     runner.clearMemory()
     print("Memory Cleared")
-    runner.runLive()
+    #runner.runLive()

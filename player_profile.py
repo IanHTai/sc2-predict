@@ -239,6 +239,8 @@ class PlayerProfile:
             self.decay(numPeriods)
             self.decayElo(numPeriods)
             self.decayHead2Head(numPeriods)
+        if self.lastStartPeriod - date >= timedelta(days=self.periodDays):
+            self.lastStartPeriod = date
 
     def decay(self, periods):
         for i in range(periods):
@@ -372,7 +374,7 @@ class PlayerProfile:
         # outArr = [mu, phi, timeWeightedRating, normRace, glickoE, self.elo, E_A, raceElo, raceE_A, self.expOverall, raceEXP, h2hExp]
         # Raw Elo seems to have a very negative coeff (-0.5+), so I'm removing it as a feature
         outArr = [mu, timeWeightedRating, normRace, glickoE, E_A, raceElo, raceE_A, self.expOverall,
-                  raceEXP, h2hExp]
+                  raceEXP, h2hExp, self.expAverageLastPlayed]
         if useRaceRatio:
             outArr.append(raceEloRatio)
             # raceEloRatio seems to be noisy

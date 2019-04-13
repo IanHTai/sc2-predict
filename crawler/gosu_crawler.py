@@ -241,7 +241,7 @@ def reverseFile(inFile, outFile):
 if __name__ == '__main__':
     # reverseFile("../data/matchResultsDates.csv", "../data/matchResultsDates_reversed.csv")
     url = "https://www.gosugamers.net/starcraft2/matches/results?sortBy=date-asc&maxResults=18"
-    newFileName = "../data/matchResults_properTimeout.csv"
+    newFileName = "../data/matchResults_aligulac.csv"
     c = Crawler(url, newFileName)
     c.start()
 

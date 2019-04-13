@@ -9,6 +9,7 @@ import h5py
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 from sklearn.externals import joblib
+import tensorflow as tf
 
 #from tensorflow.python.keras.callbacks import TensorBoard
 from time import time
@@ -39,6 +40,14 @@ class MLP(Model):
         self.max_epochs = max_epochs
 
         self.scaler = StandardScaler()
+        self.Wsave = self.model.get_weights()
+
+        self.session = tf.Session()
+        self.graph = tf.get_default_graph()
+        with self.graph.as_default():
+            with self.session.as_default():
+                print("Model tf session initialized")
+                # for some reason in a flask app the graph/session needs to be used in the init
 
     def buildModel(self):
         input = Input(shape=(self.featSize,))
@@ -60,37 +69,45 @@ class MLP(Model):
         return input, out, model
 
     def updateRaw(self, features, matches, valFeatures, valMatches, full=False):
-        if not full:
-            transformedMatches = np.array([np.array([match[1]]) for match in matches])
-            transformedValMatches = np.array([np.array([match[1]]) for match in valMatches])
-            self.es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=5)
-            mc = ModelCheckpoint(self.saveName, monitor='val_loss', mode='min', save_best_only=True, verbose=1)
-            #tb = TensorBoard(log_dir="logs/{}".format(time()))
-            self.scaler.fit(features)
-            self.history = self.model.fit(self.scaler.transform(features), transformedMatches, validation_data=(self.scaler.transform(valFeatures), transformedValMatches), batch_size=self.batchSize,
-                       epochs=self.max_epochs, verbose=1, callbacks=[self.es, mc])
-        else:
-            # Has already been trained once, retraining with full dataset
-            transformedMatches = np.array([np.array([match[1]]) for match in matches])
-            epochs = self.es.stopped_epoch
-            mc = ModelCheckpoint(self.saveName, monitor='val_loss', mode='min', save_best_only=True, verbose=1)
-            self.history = self.model.fit(self.scaler.fit_transform(features), transformedMatches, batch_size=self.batchSize,
-                       epochs=epochs, verbose=1, callbacks=[mc])
-            joblib.dump(self.scaler, 'mlp_scaler.joblib')
+        with self.graph.as_default():
+            with self.session.as_default():
+                self.session.run(tf.global_variables_initializer())
+                if not full:
+                    transformedMatches = np.array([np.array([match[1]]) for match in matches])
+                    transformedValMatches = np.array([np.array([match[1]]) for match in valMatches])
+                    self.es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=3)
+                    mc = ModelCheckpoint(self.saveName, monitor='val_loss', mode='min', save_best_only=True, verbose=1)
+                    #tb = TensorBoard(log_dir="logs/{}".format(time()))
+                    self.scaler.fit(features)
+                    self.history = self.model.fit(self.scaler.transform(features), transformedMatches, validation_data=(self.scaler.transform(valFeatures), transformedValMatches), batch_size=self.batchSize,
+                               epochs=self.max_epochs, verbose=1, callbacks=[self.es, mc])
+                else:
+                    self.model.set_weights(self.Wsave)
+                    # Has already been trained once, retraining with full dataset
+                    transformedMatches = np.array([np.array([match[1]]) for match in matches])
+                    epochs = self.es.stopped_epoch
+                    mc = ModelCheckpoint(self.saveName, monitor='loss', mode='min', save_best_only=True, verbose=1)
+                    self.history = self.model.fit(self.scaler.fit_transform(features), transformedMatches, batch_size=self.batchSize,
+                               epochs=epochs, verbose=1, callbacks=[mc])
+                joblib.dump(self.scaler, self.scalerSaveName)
 
     def fitScaler(self, features):
         self.scaler.fit(features)
         joblib.dump(self.scaler, self.scalerSaveName)
 
     def loadBackup(self):
-        self.scaler = joblib.load(self.scalerSaveName)
-        self.model.load_weights(self.saveName)
+        with self.graph.as_default():
+            with self.session.as_default():
+                self.scaler = joblib.load(self.scalerSaveName)
+                self.model = keras.models.load_model(self.saveName)
 
     def predict(self, profile1, profile2):
-        features1 = profile1.getFeatures(profile2, useRaceRatio=self.useRaceRatio, useRD=self.useRD)
-        features2 = profile2.getFeatures(profile1, useRaceRatio=self.useRaceRatio, useRD=self.useRD)
-        features = np.array(features1 + features2).reshape(1, -1)
-        pred = self.model.predict(self.scaler.transform(features))[0]
+        with self.graph.as_default():
+            with self.session.as_default():
+                features1 = profile1.getFeatures(profile2, useRaceRatio=self.useRaceRatio, useRD=self.useRD)
+                features2 = profile2.getFeatures(profile1, useRaceRatio=self.useRaceRatio, useRD=self.useRD)
+                features = np.array(features1 + features2).reshape(1, -1)
+                pred = self.model.predict(self.scaler.transform(features))[0]
         return np.array([1-pred, pred])
 
     def predictBatch(self, profiles):
@@ -101,7 +118,9 @@ class MLP(Model):
 
             # Update with profiles in both slots to prevent strange asymmetrical model
             Xs.append(features1 + features2)
-        preds = self.model.predict(self.scaler.transform(Xs))
+        with self.graph.as_default():
+            with self.session.as_default():
+                preds = self.model.predict(self.scaler.transform(Xs))
         transformedPreds = []
         for i in range(len(preds)):
             pred = preds[i]
@@ -113,12 +132,16 @@ class MLP(Model):
         return features1 + features2
 
     def predictRaw(self, features):
-        features = np.array(features).reshape(1, -1)
-        pred = self.model.predict(self.scaler.transform(features))[0]
+        with self.graph.as_default():
+            with self.session.as_default():
+                features = np.array(features).reshape(1, -1)
+                pred = self.model.predict(self.scaler.transform(features))[0]
         return np.array([1 - pred, pred])
 
     def predictBatchRaw(self, features):
-        preds = self.model.predict(self.scaler.transform(features))
+        with self.graph.as_default():
+            with self.session.as_default():
+                preds = self.model.predict(self.scaler.transform(features))
         transformedPreds = []
         for i in range(len(preds)):
             pred = preds[i]
