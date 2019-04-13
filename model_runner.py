@@ -50,7 +50,7 @@ class ModelRunner:
 
         self.overallBalance = startCash
 
-        self.balanceHistory = [[datetime.now(), startCash]]
+        self.balanceHistory = [[datetime.strptime("2019-04-11", "%Y-%m-%d"), startCash], [datetime.now(), startCash]]
         self.betOnMatches = {}
 
         self.decay = decay
@@ -556,13 +556,16 @@ class ModelRunner:
     def graphBalance(self):
         if len(self.balanceHistory) > 0:
             bh = np.array(self.balanceHistory)
+            formatter = mdates.DateFormatter("%Y-%m-%d")
             x = bh[:,0]
             y = bh[:,1]
             img = io.BytesIO()
             plt.plot(x, y)
             plt.xlabel('Time')
             plt.ylabel('Balance')
+            plt.gcf().axes[0].xaxis.set_major_formatter(formatter)
             plt.xticks(rotation=90)
+            plt.tight_layout()
             plt.savefig(img, format='png')
             img.seek(0)
             graph_url = base64.b64encode(img.getvalue()).decode()

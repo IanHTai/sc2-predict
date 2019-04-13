@@ -1,18 +1,18 @@
-import keras.models
-import numpy as np
-import tensorflow as tf
-from keras.callbacks import EarlyStopping, ModelCheckpoint
-from keras.layers import Input, Dropout, BatchNormalization, Dense, Activation
-from keras.optimizers import Adam
-from keras.regularizers import l2
-from sklearn.externals import joblib
-from sklearn.preprocessing import StandardScaler
-
 from models.model import Model
+import tensorflow as tf
+import tensorflow.keras as keras
+from tensorflow.keras.layers import Input, Dropout, BatchNormalization, Dense, Activation
 from player_profile import PlayerProfile
-
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.regularizers import l2
+from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
+import h5py
+import numpy as np
+from sklearn.preprocessing import StandardScaler
+from sklearn.externals import joblib
 
 #from tensorflow.python.keras.callbacks import TensorBoard
+from time import time
 
 class MLP(Model):
     def __init__(self, useRaceRatio=True, useRD=True, layers=2, width=200, layerArr=[], dropout=0.2, learning_rate= 1e-3,
