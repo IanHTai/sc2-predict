@@ -40,7 +40,7 @@ class API:
         self.runner = ModelRunner(model, "data/matchResults_aligulac.csv", trainRatio=0.8, testRatio=0.2,
                              lastGameId="302054", keepPercent=1.0, decay=False)
         print(datetime.now(), 'Model Runner Created')
-        self.runner.getLastId()
+        print(self.runner.getLastId())
         self.runner.loadProfiles()
         self.runner.model.loadBackup()
         self.runner.clearMemory()
