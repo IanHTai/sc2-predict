@@ -33,11 +33,12 @@ class API:
         self.app.add_url_rule('/players/<p1>/<p2>', 'players', self.players, methods=['GET','POST'])
         self.app.add_url_rule('/bets', 'bets', self.bets)
         self.app.add_url_rule('/rankings', 'rankings', self.rankings)
+        self.app.add_url_rule('/recent', 'recent', self.recentMatches)
         helper.fillRegionDict()
         model = MLP(max_epochs=10000, batch_size=128, learning_rate=5e-3, width=50, layers=1)
         print('Model Created')
         self.runner = ModelRunner(model, "data/matchResults_aligulac.csv", trainRatio=0.8, testRatio=0.2,
-                             lastGameId="298916", keepPercent=1.0, decay=False)
+                             lastGameId="302054", keepPercent=1.0, decay=False)
         print(datetime.now(), 'Model Runner Created')
         self.runner.getLastId()
         self.runner.loadProfiles()
@@ -53,7 +54,7 @@ class API:
                   profile.expOverall)
             rank += 1
 
-        self.liveThread = threading.Thread(target=self.runner.runLive)
+        self.liveThread = threading.Thread(target=self.runner.getLive)
         self.liveThread.start()
 
     def start(self):
@@ -167,6 +168,12 @@ class API:
             glickos.append("%.2f" % round(profile.glickoRating, 2))
             rank += 1
         return render_template("rankings.html", ranks=ranks, rates=rates, names=names, races=races, countries=countries, elos=elos, glickos=glickos)
+
+    def recentMatches(self):
+        matchList = reversed(self.runner.recentMatches)
+        return render_template("recent.html", matches=matchList)
+
+
 
 if __name__ == "__main__":
     a = API()

@@ -55,6 +55,8 @@ class ModelRunner:
 
         self.decay = decay
 
+        self.recentMatches = []
+
     def getLastId(self):
         df = pd.read_csv(self.fileName, dtype=str, keep_default_na=False)
         df = df.to_dict("records")
@@ -386,8 +388,10 @@ class ModelRunner:
         url = "https://www.gosugamers.net/starcraft2/matches/results?sortBy=date-asc&maxResults=18"
         c = Crawler(url, fileName=self.fileName, cleaner=self.cleaner)
         # c.start()
-        liveGen = c.liveGenerator(fromPage=593, lastGameId=self.lastGameId)
+        liveGen = c.liveGenerator(fromPage=621, lastGameId=self.lastGameId)
         for i in liveGen:
+            self.runGame(i)
+            self.addMatchtoRecent(i)
             self.profileUpdateQueue.put(i)
 
     def runLive(self):
@@ -432,7 +436,7 @@ class ModelRunner:
                     self.betOnMatches.pop(rawMatch['Id'])
                     print("New Balance:", self.cash, "ROI Since Start:", (self.cash - self.startcash)/float(self.startcash))
 
-                matchesOut = self.runGame(rawMatch)
+
                 # self.inDict['features'] = self.inDict['features'] + matchesOut['features']
                 # self.inDict['matches'] = self.inDict['matches'] + matchesOut['matches']
 
@@ -582,6 +586,11 @@ class ModelRunner:
         with open(fileName, "rb") as file:
             self.profiles = pickle.load(file)
 
+    def addMatchtoRecent(self, match):
+        while len(self.recentMatches) > 20:
+            self.recentMatches.pop(0)
+        self.recentMatches.append(match)
+
 class NoBetsYetExceptions(RuntimeError):
     def __init__(self, dt):
         self.dt = dt
@@ -602,50 +611,52 @@ if __name__ == "__main__":
     #model = SVM(C=10)
     model = MLP(max_epochs=10000, batch_size=128, learning_rate=5e-3, width=50, layers=1)
     print('Model Created')
-    runner = ModelRunner(model, "data/matchResults_aligulac.csv", trainRatio=0.8, testRatio=0.2, lastGameId="298916", keepPercent=1.0, decay=True)
+    runner = ModelRunner(model, "data/matchResults_aligulac.csv", trainRatio=0.8, testRatio=0.2, lastGameId="302054", keepPercent=1.0, decay=True)
     print(datetime.now(), 'Model Runner Created')
 
-    # runner.runFile(keepFeats=False)
     runner.runFile(keepFeats=True)
     print(datetime.now(), 'File Run')
 
     """
     Just Load Backup
     """
-    # runner.model.loadBackup()
+    runner.model.loadBackup()
 
 
-    runner.createTTV(0.7, 0.2)
-    print(datetime.now(), 'TTV Separated')
-    runner.updateModel()
-    print(datetime.now(), 'Model Updated')
-    runner.testModel()
-
-    maruAliveResults = runner.predict("maru", "Terran", "Korea Republic of", "alive", "Terran", "Korea Republic of")
-    print("Maru", maruAliveResults[0], "aLive", maruAliveResults[1])
-    print(runner.predictSeries("maru", "Terran", "Korea Republic of", "alive", "Terran", "Korea Republic of", 1))
+    # runner.createTTV(0.7, 0.2)
+    # print(datetime.now(), 'TTV Separated')
+    # runner.updateModel()
+    # print(datetime.now(), 'Model Updated')
+    # runner.testModel()
+    #
+    # maruAliveResults = runner.predict("maru", "Terran", "Korea Republic of", "alive", "Terran", "Korea Republic of")
+    # print("Maru", maruAliveResults[0], "aLive", maruAliveResults[1])
+    # print(runner.predictSeries("maru", "Terran", "Korea Republic of", "alive", "Terran", "Korea Republic of", 1))
 
     # for key in runner.profiles.keys():
     #     runner.profiles[key].checkDecay(datetime.now().date())
 
     # USE FOR REAL NOW
-    runner.createTTV(1.0,0.0)
-    runner.updateModel(full=True)
-    print("Used all matches for training, ready for deployment")
-
-    maruAliveResults = runner.predict("maru", "Terran", "Korea Republic of", "classic", "Protoss", "Korea Republic of")
-    print("Maru", maruAliveResults[0], "Classic", maruAliveResults[1])
-    print(runner.predictSeries("maru", "Terran", "Korea Republic of", "classic", "Protoss", "Korea Republic of", 7))
-    print("Harstem Clem",
-          runner.predictSeries("harstem", "Protoss", "Netherlands", "clem", "Terran", "France", 9))
-
-    print("Leenock Hurricane", runner.predictSeries("leenock", "Zerg", "Korea Republic of", "hurricane", "Protoss", "Korea Republic of", 3))
+    # runner.createTTV(1.0,0.0)
+    # runner.updateModel(full=True)
+    # print("Used all matches for training, ready for deployment")
+    #
+    # maruAliveResults = runner.predict("maru", "Terran", "Korea Republic of", "classic", "Protoss", "Korea Republic of")
+    # print("Maru", maruAliveResults[0], "Classic", maruAliveResults[1])
+    # print(runner.predictSeries("maru", "Terran", "Korea Republic of", "classic", "Protoss", "Korea Republic of", 7))
+    # print("Harstem Clem",
+    #       runner.predictSeries("harstem", "Protoss", "Netherlands", "clem", "Terran", "France", 9))
+    #
+    # print("Leenock Hurricane", runner.predictSeries("leenock", "Zerg", "Korea Republic of", "hurricane", "Protoss", "Korea Republic of", 3))
     rankingsList = runner.generateRanking(20)
     rank = 1
     print("Rank, Name, Race, Country, Project W/R, Elo, Glicko, MatchExpAvg")
     for [rate, profile] in rankingsList:
         print(rank, profile.name, profile.race, profile.country, rate, profile.elo, profile.glickoRating, profile.expOverall)
         rank += 1
+
+    # runner.getLive()
+
     runner.dumpProfiles()
     # print(runner.model.model.coef_)
     # print("[mu, phi, timeWeightedRating, normRace, glickoE, self.elo, E_A, raceElo, raceE_A, self.expOverall, raceEXP, h2hExp, raceEloRatio]")

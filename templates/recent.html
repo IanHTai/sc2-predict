@@ -100,8 +100,8 @@ tr:nth-child(even) {
 <div class="topnav">
     <a href="{{url_for('index')}}">Home</a>
     <a href="{{url_for('bets')}}">Bets</a>
-    <a class="active" href="{{url_for('rankings')}}">Rankings</a>
-    <a href="{{url_for('recent')}}">Recent</a>
+    <a href="{{url_for('rankings')}}">Rankings</a>
+    <a class="active" href="{{url_for('recent')}}">Recent</a>
 </div>
 
 <div style="padding-left:16px">
@@ -109,28 +109,15 @@ tr:nth-child(even) {
     <h3>Infer the odds for a series between two professional Starcraft 2 Players</h3>
 
     <div>
-        <h2>Top 20 Rankings</h2>
-        <p>Top 20 player rankings according to average predicted win percentage against other top 40 players</p>
+        <h2>Recent Matches</h2>
         <div>
             <table>
+                {% for match in matches %}
                 <tr>
-                    <th>Rank</th>
-                    <th>Name</th>
-                    <th>Race</th>
-                    <th>Country</th>
-                    <th>Average W/R vs Top 40</th>
-                    <th>Elo</th>
-                    <th>Glicko2</th>
-                </tr>
-                {% for rank in ranks %}
-                <tr>
-                    <td>{{ rank }}</td>
-                    <td>{{ names[loop.index0] }}</td>
-                    <td>{{ races[loop.index0] }}</td>
-                    <td>{{ countries[loop.index0] }}</td>
-                    <td>{{ rates[loop.index0] }}</td>
-                    <td>{{ elos[loop.index0] }}</td>
-                    <td>{{ glickos[loop.index0] }}</td>
+                    <td>{{ match['Player1'] }}</td>
+                    <td>{{ match['Score1'] }}</td>
+                    <td>{{ match['Score2'] }}</td>
+                    <td>{{ match['Player2'] }}</td>
                 </tr>
                 {% endfor %}
             </table>
